@@ -1,0 +1,18 @@
+{
+  "name": "story-exchange",
+  "version": "1.0.0",
+  "description": "A server for the Story Exchange site",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "tsc && node lib/index.js"
+  },
+  "repository": "https://github.com/BYUCS452F2019/story-exchange.git",
+  "author": "<berkeley.andrus@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^12.7.8",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "ip": "^1.1.5"
+  }
+}
