@@ -26,12 +26,46 @@ app.get("/stories", (req, res) => {
   res.send(JSON.stringify(db.getStories()));
 });
 
-app.get("/stories", (req, res) => {
-  res.send(JSON.stringify(db.getStories()));
-});
-
 app.get("/review-reservations", (req, res) => {
   res.send(db.getReviewReservations());
+});
+
+app.get("/reviews", (req, res) => {
+  res.send(mariaDB.getReviews());
+});
+
+app.post("/reviews", (req, res) => {
+  mariaDB
+    .addReview(req.body.reviewText, req.body.reviewerID, req.body.storyID)
+    .then(res.status(200))
+    .catch(error => {
+      console.log(error.message);
+      const msg = "Review from this user already exists for this story";
+      if (error.message == msg) {
+        res.status(403).send(msg);
+      } else {
+        res.status(500).send("Internal Server Error");
+      }
+    });
+});
+
+app.get("/reservations", (req, res) => {
+  res.send(mariaDB.getReservations());
+});
+
+app.post("/reservations", (req, res) => {
+  mariaDB
+    .addReservation(req.body.userID, req.body.storyID)
+    .then(res.status(200))
+    .catch(error => {
+      console.log(error.message);
+      const msg = "User has already reserved this story for review";
+      if (error.message == msg) {
+        res.status(403).send(msg);
+      } else {
+        res.status(500).send("Internal Server Error");
+      }
+    });
 });
 
 app.post("/register", (req: Request, res: Response) => {
