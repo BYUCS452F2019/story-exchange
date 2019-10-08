@@ -28,4 +28,18 @@ CREATE TABLE LoginSessions (
 	Expires Datetime,
 	FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
+
+CREATE TABLE Reviews (
+	ReviewID int PRIMARY KEY AUTO_INCREMENT,
+	ReviewText varchar(255) NOT NULL,
+	ReviewerID int NOT NULL,
+	StoryID int NOT NULL,
+	Stars decimal(2,1)
+);
+
+CREATE TABLE Reservations (
+	UserID int NOT NULL,
+	StoryID int NOT NULL,
+	CONSTRAINT reservations_pk PRIMARY KEY (UserID, StoryID)
+);
 	
