@@ -3,14 +3,14 @@ import { ReviewReservation } from "./review_reservation";
 
 export class User {
     private name: string;
-    private emailAddress: string;
+    private password: string;
     private postedStories: Story[];
     private reservedStories: ReviewReservation[];
     private credit: number;
 
-    constructor(name: string, emailAddress: string, postedStories: Story[], reservedStories: ReviewReservation[], credit: number) {
+    constructor(name: string, password: string, postedStories: Story[] = [], reservedStories: ReviewReservation[] = [], credit: number = 0) {
         this.name = name;
-        this.emailAddress = emailAddress;
+        this.password = password;
         this.postedStories = postedStories;
         this.reservedStories = reservedStories;
         this.credit = credit;
