@@ -22,8 +22,8 @@ export class MariaDB {
     const conn = await this.createConnection();
     const otherReviews = await conn.query(
       `SELECT * 
-               FROM Reviews
-               WHERE ReviewerID="${reviewerID}" AND StoryID="${storyID}"`
+            FROM Reviews
+            WHERE ReviewerID="${reviewerID}" AND StoryID="${storyID}"`
     );
     if (otherReviews.length > 0) {
       conn.end();
@@ -41,8 +41,8 @@ export class MariaDB {
     const conn = await this.createConnection();
     const reviews = await conn.query(
       `SELECT * 
-                 FROM Reviews
-                 WHERE ReviewID=${reviewID}`
+            FROM Reviews
+            WHERE ReviewID=${reviewID}`
     );
     if (reviews.length === 0) {
       conn.end();
@@ -69,8 +69,8 @@ export class MariaDB {
     const conn = await this.createConnection();
     const otherReservations = await conn.query(
       `SELECT * 
-               FROM Reservations
-               WHERE UserID="${userID}" AND StoryID="${storyID}"`
+            FROM Reservations
+            WHERE UserID="${userID}" AND StoryID="${storyID}"`
     );
     if (otherReservations.length > 0) {
       conn.end();
@@ -85,8 +85,8 @@ export class MariaDB {
     const conn = await this.createConnection();
     const otherUsers = await conn.query(
       `SELECT * 
-             FROM Users
-             WHERE UserName="${username}"`
+            FROM Users
+            WHERE UserName="${username}"`
     );
     if (otherUsers.length > 0) {
       conn.end();
