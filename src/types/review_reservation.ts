@@ -1,9 +1,21 @@
 export class ReviewReservation {
-  userID: string;
-  storyID: string;
+  story: string;
+  reviewer: string;
+  dateReserved: Date;
+  reviewCompleted: Date | null;
+  reviewText: string | null;
 
-  constructor(userID: string, storyID: string) {
-    this.userID = userID;
-    this.storyID = storyID;
+  constructor(
+    story: string,
+    reviewer: string,
+    dateReserved: Date,
+    reviewCompleted?: Date,
+    reviewText?: string
+  ) {
+    this.story = story;
+    this.reviewer = reviewer;
+    this.dateReserved = dateReserved;
+    this.reviewCompleted = reviewCompleted;
+    this.reviewText = reviewText;
   }
 }

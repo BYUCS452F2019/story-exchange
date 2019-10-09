@@ -31,9 +31,28 @@ export class MariaDB {
     }
     await conn.query(
       `INSERT INTO Reviews (ReviewText, ReviewerID, StoryID)
-            values (${reviewText}, ${reviewerID}, ${storyID})`
+            values ("${reviewText}", ${reviewerID}, ${storyID})`
     );
     conn.end();
+    return;
+  }
+
+  public async rateReview(reviewID: number, rating: number) {
+    const conn = await this.createConnection();
+    const reviews = await conn.query(
+      `SELECT * 
+                 FROM Reviews
+                 WHERE ReviewID=${reviewID}`
+    );
+    if (reviews.length == 0) {
+      conn.end();
+      throw new Error("Review does not exist");
+    }
+    await conn.query(
+      `UPDATE Reviews SET Rating="${rating}" WHERE ReviewID="${reviewID}"`
+    );
+    conn.end();
+    return;
   }
 
   public async getReservations() {
@@ -59,6 +78,7 @@ export class MariaDB {
     }
     await conn.query(`INSERT INTO Reservations values (${userID}, ${storyID})`);
     conn.end();
+    return;
   }
 
   public async register(username: string, password: string) {

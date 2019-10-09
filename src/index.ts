@@ -37,10 +37,25 @@ app.get("/reviews", (req, res) => {
 app.post("/reviews", (req, res) => {
   mariaDB
     .addReview(req.body.reviewText, req.body.reviewerID, req.body.storyID)
-    .then(res.status(200))
+    .then(res.status(200).send())
     .catch(error => {
       console.log(error.message);
       const msg = "Review from this user already exists for this story";
+      if (error.message == msg) {
+        res.status(403).send(msg);
+      } else {
+        res.status(500).send("Internal Server Error");
+      }
+    });
+});
+
+app.update("/reviews", (req, res) => {
+  mariaDB
+    .rateReview(req.body.reviewID, req.body.rating)
+    .then(res.status(200).send())
+    .catch(error => {
+      console.log(error.message);
+      const msg = "Review does not exist";
       if (error.message == msg) {
         res.status(403).send(msg);
       } else {
@@ -56,7 +71,7 @@ app.get("/reservations", (req, res) => {
 app.post("/reservations", (req, res) => {
   mariaDB
     .addReservation(req.body.userID, req.body.storyID)
-    .then(res.status(200))
+    .then(res.status(200).send())
     .catch(error => {
       console.log(error.message);
       const msg = "User has already reserved this story for review";
