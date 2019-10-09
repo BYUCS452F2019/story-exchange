@@ -24,7 +24,7 @@ CREATE TABLE LoginSessions (
 );
 CREATE TABLE Reviews (
   ReviewID int PRIMARY KEY AUTO_INCREMENT,
-  ReviewText varchar(255) NOT NULL,
+  ReviewText varchar(MAX) NOT NULL,
   ReviewerID int NOT NULL,
   StoryID int NOT NULL,
   Stars decimal(2, 1),
