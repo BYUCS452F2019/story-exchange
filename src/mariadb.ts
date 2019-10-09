@@ -4,11 +4,23 @@ const uuidv4 = require('uuid/v4');
 export class MariaDB {
   constructor() {}
 
-  public async getReviews() {
+  public async getReviewsByUser(userID: number) {
     const conn = await this.createConnection();
     const reviews = await conn.query(
       `SELECT *
-            FROM Reviews`
+        FROM Reviews
+        WHERE ReviewerID=${userID}`
+    );
+    conn.end();
+    return reviews;
+  }
+
+  public async getReviewsByStory(storyID: number) {
+    const conn = await this.createConnection();
+    const reviews = await conn.query(
+      `SELECT *
+        FROM Reviews
+        WHERE StoryID = ${storyID}`
     );
     conn.end();
     return reviews;
@@ -33,6 +45,11 @@ export class MariaDB {
       `INSERT INTO Reviews (ReviewText, ReviewerID, StoryID)
             values ("${reviewText}", ${reviewerID}, ${storyID})`
     );
+    await conn.query(
+      `DELETE FROM Reservations 
+        WHERE UserID = ${reviewerID}
+        AND StoryID = ${storyID}`
+    );
     conn.end();
     return;
   }
@@ -55,11 +72,12 @@ export class MariaDB {
     return;
   }
 
-  public async getReservations() {
+  public async getReservationsByUser(userID: number) {
     const conn = await this.createConnection();
     const reservations = await conn.query(
       `SELECT *
-            FROM Reservations`
+        FROM Reservations
+        WHERE UserID=${userID}`
     );
     conn.end();
     return reservations;
