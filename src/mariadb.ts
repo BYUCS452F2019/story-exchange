@@ -44,12 +44,12 @@ export class MariaDB {
                  FROM Reviews
                  WHERE ReviewID=${reviewID}`
     );
-    if (reviews.length == 0) {
+    if (reviews.length === 0) {
       conn.end();
       throw new Error("Review does not exist");
     }
     await conn.query(
-      `UPDATE Reviews SET Rating="${rating}" WHERE ReviewID="${reviewID}"`
+      `UPDATE Reviews SET Stars="${rating}" WHERE ReviewID="${reviewID}"`
     );
     conn.end();
     return;

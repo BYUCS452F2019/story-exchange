@@ -31,7 +31,14 @@ app.get("/review-reservations", (req, res) => {
 });
 
 app.get("/reviews", (req, res) => {
-  res.send(mariaDB.getReviews());
+  mariaDB
+    .getReviews()
+    .then(reviews => {
+      res.send(reviews);
+    })
+    .catch(error => {
+      res.status(500).send(error.message);
+    });
 });
 
 app.post("/reviews", (req, res) => {
@@ -49,7 +56,7 @@ app.post("/reviews", (req, res) => {
     });
 });
 
-app.update("/reviews", (req, res) => {
+app.post("/rating", (req, res) => {
   mariaDB
     .rateReview(req.body.reviewID, req.body.rating)
     .then(res.status(200).send())
@@ -65,7 +72,14 @@ app.update("/reviews", (req, res) => {
 });
 
 app.get("/reservations", (req, res) => {
-  res.send(mariaDB.getReservations());
+  mariaDB
+    .getReservations()
+    .then(reservations => {
+      res.send(reservations);
+    })
+    .catch(error => {
+      res.status(500).send(error.message);
+    });
 });
 
 app.post("/reservations", (req, res) => {
