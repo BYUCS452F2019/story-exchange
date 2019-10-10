@@ -1,7 +1,6 @@
 import { MockDB } from './mockdb';
 import { MariaDB } from './mariadb';
 import { Request, Response } from 'express';
-import { Review } from './types/review';
 
 const express = require('express');
 var bodyParser = require('body-parser');

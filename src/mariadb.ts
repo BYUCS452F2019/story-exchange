@@ -20,7 +20,7 @@ export class MariaDB {
     const reviews = await conn.query(
       `SELECT *
         FROM Reviews
-        WHERE StoryID = ${storyID}`
+        WHERE StoryID=${storyID}`
     );
     conn.end();
     return reviews;
