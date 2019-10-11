@@ -1,3 +1,6 @@
+import { Reservation } from './types/reservation';
+import { Review } from './types/review';
+
 const mariadb = require('mariadb');
 const uuidv4 = require('uuid/v4');
 
@@ -26,16 +29,12 @@ export class MariaDB {
     return reviews;
   }
 
-  public async addReview(
-    reviewText: string,
-    reviewerID: number,
-    storyID: number
-  ) {
+  public async addReview(review: Review) {
     const conn = await this.createConnection();
     const otherReviews = await conn.query(
       `SELECT * 
             FROM Reviews
-            WHERE ReviewerID="${reviewerID}" AND StoryID="${storyID}"`
+            WHERE ReviewerID="${review.reviewerID}" AND StoryID="${review.storyID}"`
     );
     if (otherReviews.length > 0) {
       conn.end();
@@ -43,12 +42,12 @@ export class MariaDB {
     }
     await conn.query(
       `INSERT INTO Reviews (ReviewText, ReviewerID, StoryID)
-            values ("${reviewText}", ${reviewerID}, ${storyID})`
+            values ("${review.reviewText}", ${review.reviewerID}, ${review.storyID})`
     );
     await conn.query(
       `DELETE FROM Reservations 
-        WHERE UserID = ${reviewerID}
-        AND StoryID = ${storyID}`
+        WHERE UserID = ${review.reviewerID}
+        AND StoryID = ${review.storyID}`
     );
     conn.end();
     return;
@@ -83,18 +82,20 @@ export class MariaDB {
     return reservations;
   }
 
-  public async addReservation(userID: number, storyID: number) {
+  public async addReservation(reservation: Reservation) {
     const conn = await this.createConnection();
     const otherReservations = await conn.query(
       `SELECT * 
             FROM Reservations
-            WHERE UserID="${userID}" AND StoryID="${storyID}"`
+            WHERE UserID="${reservation.userID}" AND StoryID="${reservation.storyID}"`
     );
     if (otherReservations.length > 0) {
       conn.end();
       throw new Error('User has already reserved this story for review');
     }
-    await conn.query(`INSERT INTO Reservations values (${userID}, ${storyID})`);
+    await conn.query(
+      `INSERT INTO Reservations values (${reservation.userID}, ${reservation.storyID})`
+    );
     conn.end();
     return;
   }

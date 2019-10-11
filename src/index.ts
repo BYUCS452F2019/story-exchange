@@ -1,6 +1,8 @@
 import { MockDB } from './mockdb';
 import { MariaDB } from './mariadb';
 import { Request, Response } from 'express';
+import { Reservation } from './types/reservation';
+import { Review } from './types/review';
 
 const express = require('express');
 var bodyParser = require('body-parser');
@@ -55,8 +57,13 @@ app.get('/reviews', (req, res) => {
 });
 
 app.post('/reviews', (req, res) => {
+  const review = new Review(
+    req.body.reviewText,
+    req.body.reviewerID,
+    req.body.storyID
+  );
   mariaDB
-    .addReview(req.body.reviewText, req.body.reviewerID, req.body.storyID)
+    .addReview(review)
     .then(res.status(200).send())
     .catch(error => {
       console.log(error.message);
@@ -96,8 +103,9 @@ app.get('/reservations', (req, res) => {
 });
 
 app.post('/reservations', (req, res) => {
+  const reservation = new Reservation(req.body.userID, req.body.storyID);
   mariaDB
-    .addReservation(req.body.userID, req.body.storyID)
+    .addReservation(reservation)
     .then(res.status(200).send())
     .catch(error => {
       console.log(error.message);
