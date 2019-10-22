@@ -113,8 +113,8 @@ app.post('/reservations', (req, res) => {
 app.post('/register', (req: Request, res: Response) => {
   mariaDB
     .register(req.body.UserName, req.body.Password)
-    .then(token => {
-      res.send(token);
+    .then(loginPackage => {
+      res.send(JSON.stringify(loginPackage));
     })
     .catch(error => {
       console.log(error.message);
@@ -129,8 +129,8 @@ app.post('/register', (req: Request, res: Response) => {
 app.post('/login', (req, res) => {
   mariaDB
     .loginUser(req.body.UserName, req.body.Password)
-    .then(token => {
-      res.send(token);
+    .then(loginPackage => {
+      res.send(JSON.stringify(loginPackage));
     })
     .catch(error => {
       console.log(error.message);

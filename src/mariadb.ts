@@ -147,7 +147,9 @@ export class MariaDB {
             `
     );
     conn.end();
-    return sessionToken;
+    const fullUser = requestedUser[0];
+    delete fullUser.Password; // TODO once we have password hashing this will need to get updated
+    return { token: sessionToken, user: fullUser };
   }
 
   private createConnection() {
