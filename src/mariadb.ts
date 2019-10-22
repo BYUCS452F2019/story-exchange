@@ -1,3 +1,5 @@
+import { Reservation } from './types/reservation';
+
 const mariadb = require('mariadb');
 const uuidv4 = require('uuid/v4');
 
@@ -72,7 +74,7 @@ export class MariaDB {
     return;
   }
 
-  public async getReservationsByUser(userID: number) {
+  public async getReservationsByUser(userID: number): Promise<Reservation[]> {
     const conn = await this.createConnection();
     const reservations = await conn.query(
       `SELECT *
@@ -80,6 +82,7 @@ export class MariaDB {
         WHERE UserID=${userID}`
     );
     conn.end();
+    console.log(reservations);
     return reservations;
   }
 
