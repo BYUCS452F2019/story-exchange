@@ -84,9 +84,9 @@ app.post('/rating', (req, res) => {
     });
 });
 
-app.get('/reservations', (req, res) => {
+app.get('/reservations/:userID', (req, res) => {
   mariaDB
-    .getReservationsByUser(req.body.userID)
+    .getReservationsByUser(req.params.userID)
     .then(reservations => {
       res.send(JSON.stringify(reservations));
     })
@@ -101,7 +101,7 @@ app.post('/reservations', (req, res) => {
     .then(res.status(200).send())
     .catch(error => {
       console.log(error.message);
-      const msg = 'User has already reserved this story for review';
+      const msg = 'Error: User has already reserved this story for review';
       if (error.message == msg) {
         res.status(403).send(msg);
       } else {

@@ -82,7 +82,6 @@ export class MariaDB {
         WHERE UserID=${userID}`
     );
     conn.end();
-    console.log(reservations);
     return reservations;
   }
 
