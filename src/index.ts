@@ -88,7 +88,7 @@ app.get('/reservations/:userID', (req, res) => {
   mariaDB
     .getReservationsByUser(req.params.userID)
     .then(reservations => {
-      res.send(JSON.stringify(reservations));
+      res.send(reservations);
     })
     .catch(error => {
       res.status(500).send(error.message);
