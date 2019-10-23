@@ -91,7 +91,7 @@ export class MockDB {
   generateStories() {
     const story = new Story(
       'A Wonderous Journey',
-      'a123',
+      '123',
       'tommyj',
       'Action',
       'superfakelink.com',
@@ -103,7 +103,7 @@ export class MockDB {
     );
     const story2 = new Story(
       'Modestly Mean',
-      'a124',
+      '124',
       'shj1996',
       'Romance',
       'inkitt.com/also-fake',
@@ -115,7 +115,7 @@ export class MockDB {
     );
     const story3 = new Story(
       'Uncovered',
-      'uncovered',
+      '0',
       'bettyTheBot',
       'Sci-Fi',
       'http://berkeleyandrus.com/novels/Uncovered.pdf',
@@ -127,7 +127,7 @@ export class MockDB {
     );
     const story4 = new Story(
       'Those Ills We Bear',
-      'TIWB',
+      '1',
       'bettyTheBot',
       'Drama',
       'inkitt.com/so-fake',
@@ -141,7 +141,7 @@ export class MockDB {
     for (var i = 0; i < 500; i++) {
       this.shuffleLoremText();
       const title = this.generateStoryTitle();
-      const id = title + Math.random().toString();
+      const id = Math.random().toString();
       const blurb = this.generateStoryBlurb();
       const userName = this.userNames[
         Math.floor(Math.random() * this.userNames.length)
