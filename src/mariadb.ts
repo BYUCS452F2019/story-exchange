@@ -1,4 +1,5 @@
 import { Reservation } from './types/reservation';
+import { Review } from './types/review';
 
 const mariadb = require('mariadb');
 const uuidv4 = require('uuid/v4');
@@ -28,16 +29,12 @@ export class MariaDB {
     return reviews;
   }
 
-  public async addReview(
-    reviewText: string,
-    reviewerID: number,
-    storyID: number
-  ) {
+  public async addReview(review: Review) {
     const conn = await this.createConnection();
     const otherReviews = await conn.query(
       `SELECT * 
             FROM Reviews
-            WHERE ReviewerID="${reviewerID}" AND StoryID="${storyID}"`
+            WHERE ReviewerID="${review.ReviewerID}" AND StoryID="${review.StoryID}"`
     );
     if (otherReviews.length > 0) {
       conn.end();
@@ -45,12 +42,12 @@ export class MariaDB {
     }
     await conn.query(
       `INSERT INTO Reviews (ReviewText, ReviewerID, StoryID)
-            values ("${reviewText}", ${reviewerID}, ${storyID})`
+            values ("${review.ReviewText}", ${review.ReviewerID}, ${review.StoryID})`
     );
     await conn.query(
       `DELETE FROM Reservations 
-        WHERE UserID = ${reviewerID}
-        AND StoryID = ${storyID}`
+        WHERE UserID = ${review.ReviewerID}
+        AND StoryID = ${review.StoryID}`
     );
     conn.end();
     return;
