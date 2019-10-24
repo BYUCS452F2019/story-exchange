@@ -1,6 +1,7 @@
 import { MockDB } from './mockdb';
 import { MariaDB } from './mariadb';
 import { Request, Response } from 'express';
+import { Review } from './types/review';
 
 const express = require('express');
 var bodyParser = require('body-parser');
@@ -30,33 +31,31 @@ app.get('/review-reservations', (req, res) => {
   res.send(db.getReviewReservations());
 });
 
-app.get('/reviews', (req, res) => {
-  if (req.body.userID) {
-    mariaDB
-      .getReviewsByUser(req.body.userID)
-      .then(reviews => {
-        res.send(reviews);
-      })
-      .catch(error => {
-        res.status(500).send(error.message);
-      });
-  } else if (req.body.storyID) {
-    mariaDB
-      .getReviewsByStory(req.body.storyID)
-      .then(reviews => {
-        res.send(reviews);
-      })
-      .catch(error => {
-        res.status(500).send(error.message);
-      });
-  } else {
-    res.status(400).send('Bad Request');
-  }
+app.get('/reviews/user/:userID', (req, res) => {
+  mariaDB
+    .getReviewsByUser(req.params.userID)
+    .then(reviews => {
+      res.send(reviews);
+    })
+    .catch(error => {
+      res.status(500).send(error.message);
+    });
+});
+
+app.get('/reviews/story/:storyID', (req, res) => {
+  mariaDB
+    .getReviewsByStory(req.params.storyID)
+    .then(reviews => {
+      res.send(reviews);
+    })
+    .catch(error => {
+      res.status(500).send(error.message);
+    });
 });
 
 app.post('/reviews', (req, res) => {
   mariaDB
-    .addReview(req.body.reviewText, req.body.reviewerID, req.body.storyID)
+    .addReview(req.body.review as Review)
     .then(res.status(200).send())
     .catch(error => {
       console.log(error.message);
