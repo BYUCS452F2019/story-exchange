@@ -138,10 +138,21 @@ export class MockDB {
       []
     );
     let allStories = [story, story2, story3, story4];
+    const currentIDs = {};
+    for (let story of allStories) {
+      currentIDs[story.storyID] = true;
+    }
+    for (var i = 0; i < 100000; i++) {
+      currentIDs[i.toString()] = false;
+    }
     for (var i = 0; i < 500; i++) {
       this.shuffleLoremText();
       const title = this.generateStoryTitle();
-      const id = Math.random().toString();
+      let id = Math.floor(Math.random() * 100000).toString();
+      while (currentIDs[id]) {
+        id = Math.floor(Math.random() * 100000).toString();
+      }
+      currentIDs[id] = true;
       const blurb = this.generateStoryBlurb();
       const userName = this.userNames[
         Math.floor(Math.random() * this.userNames.length)
