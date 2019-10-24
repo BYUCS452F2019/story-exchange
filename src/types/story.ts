@@ -37,7 +37,6 @@ export class Story {
   }
 
   getReviewsLeft(): number {
-    //TODO: remove this logic if it is unecessary
     return this.desiredReviews - this.completedReviews.length;
   }
 }
