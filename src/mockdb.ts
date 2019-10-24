@@ -139,11 +139,11 @@ export class MockDB {
     );
     let allStories = [story, story2, story3, story4];
     const currentIDs = {};
-    for (let story of allStories) {
-      currentIDs[story.storyID] = true;
-    }
     for (var i = 0; i < 100000; i++) {
       currentIDs[i.toString()] = false;
+    }
+    for (let story of allStories) {
+      currentIDs[story.storyID] = true;
     }
     for (var i = 0; i < 500; i++) {
       this.shuffleLoremText();
