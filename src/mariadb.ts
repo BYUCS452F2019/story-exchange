@@ -58,6 +58,13 @@ export class MariaDB {
           WHERE StoryID = ${storyID}
           and DesiredReviews > 0`
     );
+    const stories = await conn.query(
+      `SELECT *
+        FROM Stories
+        WHERE StoryID=${storyID}`
+    );
+    conn.end();
+    return stories;
   }
 
   public async getStoriesByUser(userID: number) {

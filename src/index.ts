@@ -99,8 +99,8 @@ app.post('/stories', (req, res) => {
 app.post('/stories/desired-reviews/:storyID', (req, res) => {
   mariaDB
     .decrementDesiredReviews(req.params.storyID)
-    .then(() => {
-      res.status(200).send();
+    .then(stories => {
+      res.status(200).send(stories);
     })
     .catch(error => {
       console.log(error.message);
