@@ -20,11 +20,11 @@ export class MariaDB {
   }
 
   public async addStory(
-    userID: number, 
-    url: string, 
-    title: string, 
-    genre: string, 
-    blurb: string, 
+    userID: number,
+    url: string,
+    title: string,
+    genre: string,
+    blurb: string,
     wordCount: number,
     desiredReviews: number
   ) {
@@ -47,6 +47,16 @@ export class MariaDB {
               ${wordCount},
               ${desiredReviews}
             )`
+    );
+  }
+
+  public async decrementDesiredReviews(storyID: number) {
+    const conn = await this.createConnection();
+    await conn.query(
+      `UPDATE Stories 
+          SET DesiredReviews = DesiredReviews - 1
+          WHERE StoryID = ${storyID}
+          and DesiredReviews > 0`
     );
   }
 
@@ -74,12 +84,14 @@ export class MariaDB {
   }
 
   public async searchStories(
-    searchTerm: string, 
-    userToExclude?: string, 
+    searchTerm: string,
+    userToExclude?: string,
     includeReviewsFinished?: boolean
   ) {
     const excludeUser = userToExclude ? `AND WriterID <> ${userToExclude}` : '';
-    const includeFinished = includeReviewsFinished ? '' : `AND S.DesiredReviews > (
+    const includeFinished = includeReviewsFinished
+      ? ''
+      : `AND S.DesiredReviews > (
       SELECT COUNT(R.ReviewID)
         FROM Reviews R
         WHERE R.StoryID = S.StoryID

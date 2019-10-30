@@ -25,15 +25,15 @@ app.listen(port, () =>
 
 app.get('/stories', (req, res) => {
   mariaDB
-	.getStories()
-	.then(stories => {
-	  res.send(stories);
-  })
-  .catch(error => {
-    res.status(500).send(error.message);
-    console.log('In get stories');
-    console.error(error);
-  });
+    .getStories()
+    .then(stories => {
+      res.send(stories);
+    })
+    .catch(error => {
+      res.status(500).send(error.message);
+      console.log('In get stories');
+      console.error(error);
+    });
 });
 
 app.get('/stories/:userID', (req, res) => {
@@ -47,7 +47,7 @@ app.get('/stories/:userID', (req, res) => {
       console.log('in get stories/:userID');
       console.error(error);
     });
-})
+});
 
 app.get('/feed/:userID', (req, res) => {
   mariaDB
@@ -60,15 +60,11 @@ app.get('/feed/:userID', (req, res) => {
       console.log('in get feed/:userID');
       console.error(error);
     });
-})
+});
 
 app.get('/stories/search/:searchTerm', (req, res) => {
   mariaDB
-    .searchStories(
-      req.params.searchTerm, 
-      req.query.user, 
-      req.query.all
-    )
+    .searchStories(req.params.searchTerm, req.query.user, req.query.all)
     .then(stories => {
       res.send(stories);
     })
@@ -77,16 +73,16 @@ app.get('/stories/search/:searchTerm', (req, res) => {
       console.log('in get stories/search/:searchTerm');
       console.error(error);
     });
-})
+});
 
 app.post('/stories', (req, res) => {
   mariaDB
     .addStory(
       req.body.authorID,
-      req.body.link, 
-      req.body.title, 
-      req.body.genre, 
-      req.body.blurb, 
+      req.body.link,
+      req.body.title,
+      req.body.genre,
+      req.body.blurb,
       req.body.wordCount,
       req.body.desiredReviews
     )
@@ -97,6 +93,18 @@ app.post('/stories', (req, res) => {
       res.status(500).send(error.message);
       console.log('in post stories');
       console.error(error);
+    });
+});
+
+app.post('/stories/desired-reviews/:storyID', (req, res) => {
+  mariaDB
+    .decrementDesiredReviews(req.params.storyID)
+    .then(() => {
+      res.status(200).send();
+    })
+    .catch(error => {
+      console.log(error.message);
+      res.status(500).send(error.message);
     });
 });
 
