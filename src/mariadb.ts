@@ -7,13 +7,21 @@ const uuidv4 = require('uuid/v4');
 export class MariaDB {
   constructor() {}
 
-  // TODO: Make sure all story endpoints return the right info,
-  // especially usernames
   public async getStories() {
     const conn = await this.createConnection();
     const stories = await conn.query(
-      `SELECT *
-      FROM Stories`
+      `SELECT 
+        StoryID, 
+        WriterID, 
+        UserName AS Writer, 
+        StoryURL,
+        PostedDate, 
+        Title, 
+        Genre,
+        Blurb, 
+        WordCount, 
+        DesiredReviews
+          FROM Stories S INNER JOIN Users U ON S.WriterID = U.UserID`
     );
     conn.end();
     return stories;
@@ -53,9 +61,19 @@ export class MariaDB {
   public async getStoriesByUser(userID: number) {
     const conn = await this.createConnection();
     const stories = await conn.query(
-      `SELECT * 
-        FROM Stories
-        WHERE WriterID=${userID}`
+      `SELECT 
+        StoryID, 
+        WriterID, 
+        UserName AS Writer, 
+        StoryURL,
+        PostedDate, 
+        Title, 
+        Genre,
+        Blurb, 
+        WordCount, 
+        DesiredReviews
+          FROM Stories S INNER JOIN Users U ON S.WriterID = U.UserID
+          WHERE WriterID=${userID}`
     );
     conn.end();
     return stories;
@@ -65,9 +83,19 @@ export class MariaDB {
     const userClause = userID ? `WHERE WriterID <> ${userID}` : '';
     const conn = await this.createConnection();
     const stories = await conn.query(
-      `SELECT * 
-        FROM Stories
-        ${userClause}`
+      `SELECT 
+        StoryID, 
+        WriterID, 
+        UserName AS Writer, 
+        StoryURL,
+        PostedDate, 
+        Title, 
+        Genre,
+        Blurb, 
+        WordCount, 
+        DesiredReviews
+          FROM Stories S INNER JOIN Users U ON S.WriterID = U.UserID
+          ${userClause}`
     );
     conn.end();
     return stories;
