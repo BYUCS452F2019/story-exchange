@@ -24,7 +24,80 @@ app.listen(port, () =>
 );
 
 app.get('/stories', (req, res) => {
-  res.send(JSON.stringify(db.getStories()));
+  mariaDB
+	.getStories()
+	.then(stories => {
+	  res.send(stories);
+  })
+  .catch(error => {
+    res.status(500).send(error.message);
+    console.log('In get stories');
+    console.error(error);
+  });
+});
+
+app.get('/stories/:userID', (req, res) => {
+  mariaDB
+    .getStoriesByUser(req.params.userID)
+    .then(stories => {
+      res.send(stories);
+    })
+    .catch(error => {
+      res.status(500).send(error.message);
+      console.log('in get stories/:userID');
+      console.error(error);
+    });
+})
+
+app.get('/feed/:userID', (req, res) => {
+  mariaDB
+    .getBlankSearch(req.params.userID)
+    .then(stories => {
+      res.send(stories);
+    })
+    .catch(error => {
+      res.status(500).send(error.message);
+      console.log('in get feed/:userID');
+      console.error(error);
+    });
+})
+
+app.get('/stories/search/:searchTerm', (req, res) => {
+  mariaDB
+    .searchStories(
+      req.params.searchTerm, 
+      req.query.user, 
+      req.query.all
+    )
+    .then(stories => {
+      res.send(stories);
+    })
+    .catch(error => {
+      res.status(500).send(error.message);
+      console.log('in get stories/search/:searchTerm');
+      console.error(error);
+    });
+})
+
+app.post('/stories', (req, res) => {
+  mariaDB
+    .addStory(
+      req.body.authorID,
+      req.body.link, 
+      req.body.title, 
+      req.body.genre, 
+      req.body.blurb, 
+      req.body.wordCount,
+      req.body.desiredReviews
+    )
+    .then(() => {
+      res.status(200).send();
+    })
+    .catch(error => {
+      res.status(500).send(error.message);
+      console.log('in post stories');
+      console.error(error);
+    });
 });
 
 app.get('/review-reservations', (req, res) => {
@@ -39,6 +112,7 @@ app.get('/reviews/user/:userID', (req, res) => {
     })
     .catch(error => {
       res.status(500).send(error.message);
+      console.error(error);
     });
 });
 
@@ -50,6 +124,7 @@ app.get('/reviews/story/:storyID', (req, res) => {
     })
     .catch(error => {
       res.status(500).send(error.message);
+      console.error(error);
     });
 });
 
@@ -64,6 +139,7 @@ app.post('/reviews', (req, res) => {
         res.status(403).send(msg);
       } else {
         res.status(500).send('Internal Server Error');
+        console.error(error);
       }
     });
 });
@@ -79,6 +155,7 @@ app.post('/rating', (req, res) => {
         res.status(403).send(msg);
       } else {
         res.status(500).send('Internal Server Error');
+        console.error(error);
       }
     });
 });
@@ -91,6 +168,7 @@ app.get('/reservations/:userID', (req, res) => {
     })
     .catch(error => {
       res.status(500).send(error.message);
+      console.error(error);
     });
 });
 
@@ -105,6 +183,7 @@ app.post('/reservations', (req, res) => {
         res.status(403).send(msg);
       } else {
         res.status(500).send('Internal Server Error');
+        console.error(error);
       }
     });
 });
@@ -121,6 +200,7 @@ app.post('/register', (req: Request, res: Response) => {
         res.status(401).send('That username is already in use');
       } else {
         res.status(500).send('Internal Server Error');
+        console.error(error);
       }
     });
 });
@@ -137,6 +217,7 @@ app.post('/login', (req, res) => {
         res.status(401).send('Invalid Username or Password');
       } else {
         res.status(500).send('Internal Server Error');
+        console.error(error);
       }
     });
 });

@@ -7,6 +7,110 @@ const uuidv4 = require('uuid/v4');
 export class MariaDB {
   constructor() {}
 
+  // TODO: Make sure all story endpoints return the right info,
+  // especially usernames
+  public async getStories() {
+    const conn = await this.createConnection();
+    const stories = await conn.query(
+      `SELECT *
+      FROM Stories`
+    );
+    conn.end();
+    return stories;
+  }
+
+  public async addStory(
+    userID: number, 
+    url: string, 
+    title: string, 
+    genre: string, 
+    blurb: string, 
+    wordCount: number,
+    desiredReviews: number
+  ) {
+    const conn = await this.createConnection();
+    await conn.query(
+      `INSERT INTO Stories (
+            WriterID, 
+            StoryURL,
+            Title, 
+            Genre, 
+            Blurb, 
+            WordCount,
+            DesiredReviews
+            ) values (
+              ${userID}, 
+              "${url}",
+              "${title}", 
+              "${genre}", 
+              "${blurb}", 
+              ${wordCount},
+              ${desiredReviews}
+            )`
+    );
+  }
+
+  public async getStoriesByUser(userID: number) {
+    const conn = await this.createConnection();
+    const stories = await conn.query(
+      `SELECT * 
+        FROM Stories
+        WHERE WriterID=${userID}`
+    );
+    conn.end();
+    return stories;
+  }
+
+  public async getBlankSearch(userID?: number) {
+    const userClause = userID ? `WHERE WriterID <> ${userID}` : '';
+    const conn = await this.createConnection();
+    const stories = await conn.query(
+      `SELECT * 
+        FROM Stories
+        ${userClause}`
+    );
+    conn.end();
+    return stories;
+  }
+
+  public async searchStories(
+    searchTerm: string, 
+    userToExclude?: string, 
+    includeReviewsFinished?: boolean
+  ) {
+    const excludeUser = userToExclude ? `AND WriterID <> ${userToExclude}` : '';
+    const includeFinished = includeReviewsFinished ? '' : `AND S.DesiredReviews > (
+      SELECT COUNT(R.ReviewID)
+        FROM Reviews R
+        WHERE R.StoryID = S.StoryID
+    )`; // TODO: Make this based off reservations instead of reviews
+
+    const conn = await this.createConnection();
+    const stories = await conn.query(
+      `SELECT 
+        StoryID, 
+        WriterID, 
+        UserName AS Writer, 
+        StoryURL,
+        PostedDate, 
+        Title, 
+        Genre,
+        Blurb, 
+        WordCount, 
+        DesiredReviews
+          FROM Stories S INNER JOIN Users U ON S.WriterID = U.UserID
+          WHERE (
+              UserName LIKE "%${searchTerm}%"
+              OR Genre LIKE "%${searchTerm}%"
+              OR Title LIKE "%${searchTerm}%"
+            )
+            ${excludeUser}
+            ${includeFinished}`
+    );
+    conn.end();
+    return stories;
+  }
+
   public async getReviewsByUser(userID: number) {
     const conn = await this.createConnection();
     const reviews = await conn.query(

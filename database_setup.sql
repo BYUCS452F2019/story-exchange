@@ -22,18 +22,31 @@ CREATE TABLE LoginSessions (
   Expires Datetime,
   FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
+CREATE TABLE Stories (
+  StoryID int PRIMARY KEY AUTO_INCREMENT,
+  WriterID int NOT NULL,
+  StoryURL text NOT NULL,
+  PostedDate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  Title text NOT NULL,
+  Genre text NOT NULL,
+  Blurb text NOT NULL,
+  WordCount int NOT NULL,
+  DesiredReviews int NOT NULL,
+  FOREIGN KEY (WriterID) REFERENCES Users(UserID)
+);
 CREATE TABLE Reviews (
   ReviewID int PRIMARY KEY AUTO_INCREMENT,
-  ReviewText varchar(MAX) NOT NULL,
+  ReviewText text NOT NULL,
   ReviewerID int NOT NULL,
   StoryID int NOT NULL,
   Stars decimal(2, 1),
-  FOREIGN KEY (ReviewerID) REFERENCES Users(UserID)
+  FOREIGN KEY (ReviewerID) REFERENCES Users(UserID),
+  FOREIGN KEY (StoryID) REFERENCES Stories(StoryID)
 );
 CREATE TABLE Reservations (
   UserID int NOT NULL,
   StoryID int NOT NULL,
   CONSTRAINT reservations_pk PRIMARY KEY (UserID, StoryID),
-  FOREIGN KEY (UserID) REFERENCES Users (UserID)
+  FOREIGN KEY (UserID) REFERENCES Users(UserID),
+  FOREIGN KEY (StoryID) REFERENCES Stories(StoryID)
 );
-/* TODO: Add foreign key declarations for StoryID in Reviews and Reservations*/
