@@ -28,11 +28,11 @@ export class MariaDB {
   }
 
   public async addStory(
-    userID: number, 
-    url: string, 
-    title: string, 
-    genre: string, 
-    blurb: string, 
+    userID: number,
+    url: string,
+    title: string,
+    genre: string,
+    blurb: string,
     wordCount: number,
     desiredReviews: number
   ) {
@@ -80,7 +80,12 @@ export class MariaDB {
   }
 
   public async getBlankSearch(userID?: number) {
-    const userClause = userID ? `WHERE WriterID <> ${userID}` : '';
+    const userClause = userID
+      ? `WHERE WriterID <> ${userID}
+         AND ${userID} NOT IN (Select ReviewerID FROM Reviews R WHERE R.StoryID = S.StoryID)
+         AND ${userID} NOT IN (Select R.UserID FROM Reservations R WHERE R.StoryID = S.StoryID)
+        `
+      : '';
     const conn = await this.createConnection();
     const stories = await conn.query(
       `SELECT 
@@ -102,12 +107,18 @@ export class MariaDB {
   }
 
   public async searchStories(
-    searchTerm: string, 
-    userToExclude?: string, 
+    searchTerm: string,
+    userToExclude?: string,
     includeReviewsFinished?: boolean
   ) {
-    const excludeUser = userToExclude ? `AND WriterID <> ${userToExclude}` : '';
-    const includeFinished = includeReviewsFinished ? '' : `AND S.DesiredReviews > (
+    const excludeUser = userToExclude
+      ? `AND WriterID <> ${userToExclude} 
+         AND ${userToExclude} NOT IN (Select ReviewerID FROM Reviews R WHERE R.StoryID = S.StoryID)
+         AND ${userToExclude} NOT IN (Select R.UserID FROM Reservations R WHERE R.StoryID = S.StoryID)`
+      : '';
+    const includeFinished = includeReviewsFinished
+      ? ''
+      : `AND S.DesiredReviews > (
       SELECT COUNT(R.ReviewID)
         FROM Reviews R
         WHERE R.StoryID = S.StoryID
