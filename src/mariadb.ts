@@ -28,11 +28,11 @@ export class MariaDB {
   }
 
   public async addStory(
-    userID: number, 
-    url: string, 
-    title: string, 
-    genre: string, 
-    blurb: string, 
+    userID: number,
+    url: string,
+    title: string,
+    genre: string,
+    blurb: string,
     wordCount: number,
     desiredReviews: number
   ) {
@@ -102,12 +102,14 @@ export class MariaDB {
   }
 
   public async searchStories(
-    searchTerm: string, 
-    userToExclude?: string, 
+    searchTerm: string,
+    userToExclude?: string,
     includeReviewsFinished?: boolean
   ) {
     const excludeUser = userToExclude ? `AND WriterID <> ${userToExclude}` : '';
-    const includeFinished = includeReviewsFinished ? '' : `AND S.DesiredReviews > (
+    const includeFinished = includeReviewsFinished
+      ? ''
+      : `AND S.DesiredReviews > (
       SELECT COUNT(R.ReviewID)
         FROM Reviews R
         WHERE R.StoryID = S.StoryID
@@ -132,6 +134,8 @@ export class MariaDB {
               OR Genre LIKE "%${searchTerm}%"
               OR Title LIKE "%${searchTerm}%"
             )
+            AND ${userToExclude} NOT IN (Select ReviewerID FROM Reviews R WHERE R.StoryID = S.StoryID)
+            AND ${userToExclude} NOT IN (Select R.UserID FROM Reservations R WHERE R.StoryID = S.StoryID)
             ${excludeUser}
             ${includeFinished}`
     );
