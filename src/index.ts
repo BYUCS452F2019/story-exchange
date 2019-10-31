@@ -96,18 +96,6 @@ app.post('/stories', (req, res) => {
     });
 });
 
-app.post('/stories/desired-reviews/:storyID', (req, res) => {
-  mariaDB
-    .decrementDesiredReviews(req.params.storyID)
-    .then(stories => {
-      res.status(200).send(stories);
-    })
-    .catch(error => {
-      console.log(error.message);
-      res.status(500).send(error.message);
-    });
-});
-
 app.get('/review-reservations', (req, res) => {
   res.send(db.getReviewReservations());
 });
