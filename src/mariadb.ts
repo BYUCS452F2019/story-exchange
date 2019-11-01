@@ -34,7 +34,8 @@ export class MariaDB {
     genre: string,
     blurb: string,
     wordCount: number,
-    desiredReviews: number
+    desiredReviews: number,
+    postingCost: number
   ) {
     const conn = await this.createConnection();
     await conn.query(
@@ -55,6 +56,11 @@ export class MariaDB {
               ${wordCount},
               ${desiredReviews}
             )`
+    );
+    await conn.query(
+      `UPDATE Users 
+          SET Credit = Credit - ${postingCost}
+          WHERE UserID = ${userID}`
     );
   }
 
@@ -172,7 +178,7 @@ export class MariaDB {
     return reviews;
   }
 
-  public async addReview(review: Review) {
+  public async addReview(review: Review, creditEarned: number) {
     const conn = await this.createConnection();
     const otherReviews = await conn.query(
       `SELECT * 
@@ -197,6 +203,11 @@ export class MariaDB {
           SET DesiredReviews = DesiredReviews - 1
           WHERE StoryID = ${review.StoryID}
           and DesiredReviews > 0`
+    );
+    await conn.query(
+      `UPDATE Users 
+          SET Credit = Credit + ${creditEarned}
+          WHERE UserID = ${review.ReviewerID}`
     );
     conn.end();
     return;
