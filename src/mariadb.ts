@@ -192,6 +192,12 @@ export class MariaDB {
         WHERE UserID = ${review.ReviewerID}
         AND StoryID = ${review.StoryID}`
     );
+    await conn.query(
+      `UPDATE Stories 
+          SET DesiredReviews = DesiredReviews - 1
+          WHERE StoryID = ${review.StoryID}
+          and DesiredReviews > 0`
+    );
     conn.end();
     return;
   }
@@ -237,6 +243,12 @@ export class MariaDB {
       throw new Error('User has already reserved this story for review');
     }
     await conn.query(`INSERT INTO Reservations values (${userID}, ${storyID})`);
+    await conn.query(
+      `UPDATE Stories 
+          SET DesiredReviews = DesiredReviews - 1
+          WHERE StoryID = ${storyID}
+          and DesiredReviews > 0`
+    );
     conn.end();
     return;
   }
