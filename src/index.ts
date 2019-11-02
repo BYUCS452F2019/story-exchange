@@ -84,7 +84,8 @@ app.post('/stories', (req, res) => {
       req.body.genre,
       req.body.blurb,
       req.body.wordCount,
-      req.body.desiredReviews
+      req.body.desiredReviews,
+      req.body.postingCost
     )
     .then(() => {
       res.status(200).send();
@@ -126,7 +127,7 @@ app.get('/reviews/story/:storyID', (req, res) => {
 
 app.post('/reviews', (req, res) => {
   mariaDB
-    .addReview(req.body.review as Review)
+    .addReview(req.body.review as Review, req.body.creditEarned)
     .then(res.status(200).send())
     .catch(error => {
       console.log(error.message);
