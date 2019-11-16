@@ -8,7 +8,16 @@ export class MongoDB {
     url = 'mongodb://localhost:27017',
     dbName = 'story_exchange'
   } = {}) {
-    this.client = new MongoClient(url, { useUnifiedTopology: true });
+    this.client = new MongoClient(
+      url,
+      { useUnifiedTopology: true },
+      {
+        auth: {
+          user: 'admin',
+          password: 'secret-password'
+        }
+      }
+    );
     this.dbName = dbName;
   }
 
