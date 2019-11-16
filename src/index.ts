@@ -1,5 +1,6 @@
 import { MockDB } from './mockdb';
 import { MariaDB } from './mariadb';
+import { MongoDB } from './mongodb';
 import { Request, Response } from 'express';
 import { Review } from './types/review';
 
@@ -16,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const db = new MockDB();
 const mariaDB = new MariaDB();
+const mongoDB = new MongoDB();
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
@@ -158,7 +160,7 @@ app.post('/rating', (req, res) => {
 });
 
 app.get('/reservations/:userID', (req, res) => {
-  mariaDB
+  mongoDB
     .getReservationsByUser(req.params.userID)
     .then(reservations => {
       res.send(reservations);
@@ -167,10 +169,19 @@ app.get('/reservations/:userID', (req, res) => {
       res.status(500).send(error.message);
       console.error(error);
     });
+  // mariaDB
+  //   .getReservationsByUser(req.params.userID)
+  //   .then(reservations => {
+  //     res.send(reservations);
+  //   })
+  //   .catch(error => {
+  //     res.status(500).send(error.message);
+  //     console.error(error);
+  //   });
 });
 
 app.post('/reservations', (req, res) => {
-  mariaDB
+  mongoDB
     .addReservation(req.body.userID, req.body.storyID)
     .then(res.status(200).send())
     .catch(error => {
@@ -183,6 +194,19 @@ app.post('/reservations', (req, res) => {
         console.error(error);
       }
     });
+  // mariaDB
+  //   .addReservation(req.body.userID, req.body.storyID)
+  //   .then(res.status(200).send())
+  //   .catch(error => {
+  //     console.log(error.message);
+  //     const msg = 'Error: User has already reserved this story for review';
+  //     if (error.message == msg) {
+  //       res.status(403).send(msg);
+  //     } else {
+  //       res.status(500).send('Internal Server Error');
+  //       console.error(error);
+  //     }
+  //   });
 });
 
 app.post('/register', (req: Request, res: Response) => {
