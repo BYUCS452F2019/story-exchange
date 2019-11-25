@@ -11,24 +11,24 @@ MongoClient.connect(url, function(err, db) {
   const reservations = dbo.collection('reservations');
 
   users.insertMany([
-    { UserID: 1000, UserName: 'notch', Password: 'password', Credit: 526 },
-    { UserID: 1001, UserName: 'dipper', Password: 'password', Credit: 26 },
-    { UserID: 1002, UserName: 'bettyTheBot', Password: 'password', Credit: 99 },
-    { UserID: 1003, UserName: 'sparrow', Password: 'password', Credit: 350 },
-    { UserID: 1004, UserName: 'mistborn', Password: 'password', Credit: 0 },
-    { UserID: 1005, UserName: 'falcon', Password: 'password', Credit: 19 },
+    { _id: 1000, UserName: 'notch', Password: 'password', Credit: 526 },
+    { _id: 1001, UserName: 'dipper', Password: 'password', Credit: 26 },
+    { _id: 1002, UserName: 'bettyTheBot', Password: 'password', Credit: 99 },
+    { _id: 1003, UserName: 'sparrow', Password: 'password', Credit: 350 },
+    { _id: 1004, UserName: 'mistborn', Password: 'password', Credit: 0 },
+    { _id: 1005, UserName: 'falcon', Password: 'password', Credit: 19 },
     {
-      UserID: 1006,
+      _id: 1006,
       UserName: 'basic provo bro',
       Password: 'password',
       Credit: 36
     },
-    { UserID: 1007, UserName: 'demo_user', Password: 'password', Credit: 106 }
+    { _id: 1007, UserName: 'demo_user', Password: 'password', Credit: 106 }
   ]);
 
   stories.insertMany([
     {
-      StoryID: 1000,
+      _id: 1000,
       WriterID: 1007,
       StoryURL: 'inkitt.com/fake-link',
       Title: 'Those Ills We Bear',
@@ -38,7 +38,7 @@ MongoClient.connect(url, function(err, db) {
       DesiredReviews: 10
     },
     {
-      StoryID: 1001,
+      _id: 1001,
       WriterID: 1005,
       StoryURL: 'inkitt.com/fake-link',
       Title: 'What We Really Are',
@@ -48,7 +48,7 @@ MongoClient.connect(url, function(err, db) {
       DesiredReviews: 10
     },
     {
-      StoryID: 1002,
+      _id: 1002,
       WriterID: 1004,
       StoryURL: 'inkitt.com/fake-link',
       Title: "Birds Aren't Real",
@@ -58,7 +58,7 @@ MongoClient.connect(url, function(err, db) {
       DesiredReviews: 10
     },
     {
-      StoryID: 1003,
+      _id: 1003,
       WriterID: 1007,
       StoryURL: 'inkitt.com/fake-link',
       Title: 'Going in Circles',
@@ -68,7 +68,7 @@ MongoClient.connect(url, function(err, db) {
       DesiredReviews: 5
     },
     {
-      StoryID: 1004,
+      _id: 1004,
       WriterID: 1003,
       StoryURL: 'inkitt.com/fake-link',
       Title: 'Uncovered',
@@ -78,7 +78,7 @@ MongoClient.connect(url, function(err, db) {
       DesiredReviews: 7
     },
     {
-      StoryID: 1005,
+      _id: 1005,
       WriterID: 1003,
       StoryURL: 'inkitt.com/fake-link',
       Title: 'No Bodies',
@@ -88,7 +88,7 @@ MongoClient.connect(url, function(err, db) {
       DesiredReviews: 6
     },
     {
-      StoryID: 1006,
+      _id: 1006,
       WriterID: 1002,
       StoryURL: 'inkitt.com/fake-link',
       Title: 'Modestly Mean',
