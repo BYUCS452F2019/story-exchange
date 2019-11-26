@@ -30,6 +30,7 @@ MongoClient.connect(url, function(err, db) {
     {
       _id: 1000,
       WriterID: 1007,
+      Writer: 'demo_user',
       StoryURL: 'inkitt.com/fake-link',
       Title: 'Those Ills We Bear',
       Genre: 'Romance',
@@ -40,6 +41,7 @@ MongoClient.connect(url, function(err, db) {
     {
       _id: 1001,
       WriterID: 1005,
+      Writer: 'falcon',
       StoryURL: 'inkitt.com/fake-link',
       Title: 'What We Really Are',
       Genre: 'Fantasy',
@@ -50,6 +52,7 @@ MongoClient.connect(url, function(err, db) {
     {
       _id: 1002,
       WriterID: 1004,
+      Writer: 'mistborn',
       StoryURL: 'inkitt.com/fake-link',
       Title: "Birds Aren't Real",
       Genre: 'Drama',
@@ -60,6 +63,7 @@ MongoClient.connect(url, function(err, db) {
     {
       _id: 1003,
       WriterID: 1007,
+      Writer: 'demo_user',
       StoryURL: 'inkitt.com/fake-link',
       Title: 'Going in Circles',
       Genre: 'Drama',
@@ -70,6 +74,7 @@ MongoClient.connect(url, function(err, db) {
     {
       _id: 1004,
       WriterID: 1003,
+      Writer: 'sparrow',
       StoryURL: 'inkitt.com/fake-link',
       Title: 'Uncovered',
       Genre: 'Fantasy',
@@ -80,6 +85,7 @@ MongoClient.connect(url, function(err, db) {
     {
       _id: 1005,
       WriterID: 1003,
+      Writer: 'sparrow',
       StoryURL: 'inkitt.com/fake-link',
       Title: 'No Bodies',
       Genre: 'Horror',
@@ -90,6 +96,7 @@ MongoClient.connect(url, function(err, db) {
     {
       _id: 1006,
       WriterID: 1002,
+      Writer: 'bettyTheBot',
       StoryURL: 'inkitt.com/fake-link',
       Title: 'Modestly Mean',
       Genre: 'Fan-Fiction',
