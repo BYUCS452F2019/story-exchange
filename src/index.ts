@@ -210,7 +210,7 @@ app.post('/reservations', (req, res) => {
 });
 
 app.post('/register', (req: Request, res: Response) => {
-  mariaDB
+  mongoDB
     .register(req.body.UserName, req.body.Password)
     .then(loginPackage => {
       res.send(JSON.stringify(loginPackage));
@@ -227,7 +227,7 @@ app.post('/register', (req: Request, res: Response) => {
 });
 
 app.post('/login', (req, res) => {
-  mariaDB
+  mongoDB
     .loginUser(req.body.UserName, req.body.Password)
     .then(loginPackage => {
       res.send(JSON.stringify(loginPackage));
