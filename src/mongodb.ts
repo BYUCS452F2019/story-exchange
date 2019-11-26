@@ -62,7 +62,6 @@ export class MongoDB {
       .collection('users')
       .find({ UserName: userName })
       .toArray();
-    console.log(previousUsers);
     if (previousUsers.length > 0) {
       throw new Error('Username is taken');
     }
