@@ -85,18 +85,18 @@ export class MongoDB {
     return;
   }
 
-  // async rateReview(reviewID: number, rating: number) {
-  //   const db: Db = this.client.db(this.dbName);
-  //   const reviewQuery = { _id: reviewID };
-  //   const newRating = { $set: { Rating: rating } };
-  //   db.collection('reviews').updateOne(reviewQuery, newRating, function(
-  //     err,
-  //     res
-  //   ) {
-  //     if (err) throw err;
-  //   });
-  //   return;
-  // }
+  async rateReview(reviewID: number, rating: number) {
+    const db: Db = this.client.db(this.dbName);
+    const reviewQuery = { _id: reviewID };
+    const newRating = { $set: { Rating: rating } };
+    db.collection('reviews').updateOne(reviewQuery, newRating, function(
+      err,
+      res
+    ) {
+      if (err) throw err;
+    });
+    return;
+  }
 
   async addReservation(userID: number, storyID: number): Promise<boolean> {
     const db: Db = this.client.db(this.dbName);
