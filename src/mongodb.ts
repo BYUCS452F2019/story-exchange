@@ -1,5 +1,6 @@
 import { MongoClient, Db } from 'mongodb';
 import { Reservation } from './types/reservation';
+import { Review } from './types/review';
 
 import uuidv4 = require('uuid/v4');
 
@@ -24,26 +25,90 @@ export class MongoDB {
     this.dbName = dbName;
   }
 
+  async getReviewsByUser(userID: number) {
+    const db: Db = this.client.db(this.dbName);
+    return db
+      .collection('reviews')
+      .find({ ReviewerID: userID })
+      .toArray();
+  }
+
+  async getReviewsByStory(storyID: number) {
+    const db: Db = this.client.db(this.dbName);
+    return db
+      .collection('reviews')
+      .find({ StoryID: storyID })
+      .toArray();
+  }
+
+  async addReview(review: Review, creditEarned: number) {
+    const db: Db = this.client.db(this.dbName);
+    const reviews = db.collection('reviews');
+    const otherReviews = await reviews
+      .find({ ReviewerID: review.ReviewerID })
+      .toArray();
+    if (otherReviews.length > 0) {
+      throw new Error('Review from this user already exists for this story');
+    }
+    reviews.insertOne({
+      ReviewText: review.ReviewText,
+      ReviewerID: review.ReviewerID,
+      StoryID: review.StoryID
+    });
+    db.collection('reservations').deleteOne({
+      UserID: review.ReviewerID,
+      StoryID: review.StoryID
+    });
+    const stories = db.collection('stories');
+    const savedReview = await stories.findOne({ _id: review.StoryID });
+    const desiredReviews = savedReview.DesiredReviews;
+    if (desiredReviews - 1 >= 0) {
+      const storyQuery = { _id: review.StoryID };
+      const newDesiredReviews = {
+        $set: { DesiredReviews: desiredReviews - 1 }
+      };
+      stories.updateOne(storyQuery, newDesiredReviews, function(err, res) {
+        if (err) throw err;
+      });
+    }
+    const users = db.collection('users');
+    const savedUser = await db
+      .collection('users')
+      .findOne({ _id: review.ReviewerID });
+    const userQuery = { _id: review.ReviewerID };
+    const newCredit = { $set: { Credit: savedUser.Credit + creditEarned } };
+    users.updateOne(userQuery, newCredit, function(err, res) {
+      {
+        if (err) throw err;
+      }
+    });
+    return;
+  }
+
+  async rateReview(reviewID: number, rating: number) {
+    const db: Db = this.client.db(this.dbName);
+    const reviewQuery = { _id: reviewID };
+    const newRating = { $set: { Rating: rating } };
+    db.collection('reviews').updateOne(reviewQuery, newRating, function(
+      err,
+      res
+    ) {
+      if (err) throw err;
+    });
+    return;
+  }
+
   async addReservation(userID: number, storyID: number): Promise<boolean> {
     const db: Db = this.client.db(this.dbName);
-    const reservations = db.collection('reservations');
-    const reservation = { userID: userID, storyID: storyID };
-    reservations.insertOne(reservation);
-
+    const reservation = { UserID: userID, StoryID: storyID };
+    db.collection('reservations').insertOne(reservation);
     return true;
   }
 
-  getReservationsByUser(userID: number): Promise<Reservation[]> {
+  async getReservationsByUser(userID: number): Promise<Reservation[]> {
     const db: Db = this.client.db(this.dbName);
-    const reservations = db.collection('reservations');
-    return reservations
-      .find()
-      .toArray()
-      .then(saved_reservations => {
-        return saved_reservations.filter(res => {
-          return res.userID == userID;
-        });
-      });
+    const res = await db.collection('reservations').findOne({ UserID: userID });
+    return res;
   }
 
   removeUserByName(userName: string): Promise<null> {

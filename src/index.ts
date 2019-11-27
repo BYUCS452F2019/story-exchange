@@ -104,8 +104,9 @@ app.get('/review-reservations', (req, res) => {
 });
 
 app.get('/reviews/user/:userID', (req, res) => {
-  mariaDB
-    .getReviewsByUser(req.params.userID)
+  // mariaDB
+  mongoDB
+    .getReviewsByUser(parseInt(req.params.userID))
     .then(reviews => {
       res.send(reviews);
     })
@@ -116,8 +117,9 @@ app.get('/reviews/user/:userID', (req, res) => {
 });
 
 app.get('/reviews/story/:storyID', (req, res) => {
-  mariaDB
-    .getReviewsByStory(req.params.storyID)
+  // mariaDB
+  mongoDB
+    .getReviewsByStory(parseInt(req.params.storyID))
     .then(reviews => {
       res.send(reviews);
     })
@@ -128,8 +130,9 @@ app.get('/reviews/story/:storyID', (req, res) => {
 });
 
 app.post('/reviews', (req, res) => {
-  mariaDB
-    .addReview(req.body.review as Review, req.body.creditEarned)
+  // mariaDB
+  mongoDB
+    .addReview(req.body.review as Review, parseInt(req.body.creditEarned))
     .then(res.status(200).send())
     .catch(error => {
       console.log(error.message);
@@ -144,8 +147,9 @@ app.post('/reviews', (req, res) => {
 });
 
 app.post('/rating', (req, res) => {
-  mariaDB
-    .rateReview(req.body.reviewID, req.body.rating)
+  // mariaDB
+  mongoDB
+    .rateReview(parseInt(req.body.reviewID), parseInt(req.body.rating))
     .then(res.status(200).send())
     .catch(error => {
       console.log(error.message);
@@ -161,7 +165,7 @@ app.post('/rating', (req, res) => {
 
 app.get('/reservations/:userID', (req, res) => {
   mongoDB
-    .getReservationsByUser(req.params.userID)
+    .getReservationsByUser(parseInt(req.params.userID))
     .then(reservations => {
       res.send(reservations);
     })
@@ -169,15 +173,6 @@ app.get('/reservations/:userID', (req, res) => {
       res.status(500).send(error.message);
       console.error(error);
     });
-  // mariaDB
-  //   .getReservationsByUser(req.params.userID)
-  //   .then(reservations => {
-  //     res.send(reservations);
-  //   })
-  //   .catch(error => {
-  //     res.status(500).send(error.message);
-  //     console.error(error);
-  //   });
 });
 
 app.post('/reservations', (req, res) => {
@@ -194,19 +189,6 @@ app.post('/reservations', (req, res) => {
         console.error(error);
       }
     });
-  // mariaDB
-  //   .addReservation(req.body.userID, req.body.storyID)
-  //   .then(res.status(200).send())
-  //   .catch(error => {
-  //     console.log(error.message);
-  //     const msg = 'Error: User has already reserved this story for review';
-  //     if (error.message == msg) {
-  //       res.status(403).send(msg);
-  //     } else {
-  //       res.status(500).send('Internal Server Error');
-  //       console.error(error);
-  //     }
-  //   });
 });
 
 app.post('/register', (req: Request, res: Response) => {
