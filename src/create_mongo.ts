@@ -11,5 +11,8 @@ MongoClient.connect(url, function(err, db) {
     if (err) throw err;
     console.log('Collection created!');
   });
+  dbo.createCollection('users', function(err, res) {
+    if (err) throw err;
+  });
   db.close();
 });
