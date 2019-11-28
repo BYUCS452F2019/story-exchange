@@ -1,10 +1,11 @@
-import { Reservation } from './types/reservation';
-import { Review } from './types/review';
+import { Reservation } from '../types/reservation';
+import { Review } from '../types/review';
+import { Database } from './database';
 
 const mariadb = require('mariadb');
 const uuidv4 = require('uuid/v4');
 
-export class MariaDB {
+export class MariaDB implements Database {
   constructor() {}
 
   public async getStories() {
