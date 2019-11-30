@@ -1,6 +1,6 @@
-import { User } from './types/user';
-import { Story } from './types/story';
-import { ReviewReservation } from './types/review_reservation';
+import { User } from '../types/user';
+import { Story } from '../types/story';
+import { ReviewReservation } from '../types/review_reservation';
 
 export class MockDB {
   private users: User[] = [];

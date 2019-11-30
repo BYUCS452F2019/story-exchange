@@ -1,8 +1,8 @@
-import { MockDB } from './mockdb';
-import { MariaDB } from './mariadb';
-import { MongoDB } from './mongodb';
+import { MariaDB } from './database/mariadb';
+import { MongoDB } from './database/mongodb';
 import { Request, Response } from 'express';
 import { Review } from './types/review';
+import { Database } from './database/database';
 
 const express = require('express');
 var bodyParser = require('body-parser');
@@ -15,9 +15,9 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const db = new MockDB();
-const mariaDB = new MariaDB();
-const mongoDB = new MongoDB();
+// const mariaDB = new MariaDB();
+// const mongoDB = new MongoDB();
+const database: Database = new MongoDB();
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
@@ -26,7 +26,7 @@ app.listen(port, () =>
 );
 
 app.get('/stories', (req, res) => {
-  mariaDB
+  database
     .getStories()
     .then(stories => {
       res.send(stories);
@@ -39,7 +39,7 @@ app.get('/stories', (req, res) => {
 });
 
 app.get('/stories/:userID', (req, res) => {
-  mariaDB
+  database
     .getStoriesByUser(req.params.userID)
     .then(stories => {
       res.send(stories);
@@ -52,7 +52,7 @@ app.get('/stories/:userID', (req, res) => {
 });
 
 app.get('/feed/:userID', (req, res) => {
-  mariaDB
+  database
     .getBlankSearch(req.params.userID)
     .then(stories => {
       res.send(stories);
@@ -65,7 +65,7 @@ app.get('/feed/:userID', (req, res) => {
 });
 
 app.get('/stories/search/:searchTerm', (req, res) => {
-  mariaDB
+  database
     .searchStories(req.params.searchTerm, req.query.user, req.query.all)
     .then(stories => {
       res.send(stories);
@@ -78,7 +78,7 @@ app.get('/stories/search/:searchTerm', (req, res) => {
 });
 
 app.post('/stories', (req, res) => {
-  mariaDB
+  database
     .addStory(
       req.body.authorID,
       req.body.link,
@@ -99,13 +99,8 @@ app.post('/stories', (req, res) => {
     });
 });
 
-app.get('/review-reservations', (req, res) => {
-  res.send(db.getReviewReservations());
-});
-
 app.get('/reviews/user/:userID', (req, res) => {
-  // mariaDB
-  mongoDB
+  database
     .getReviewsByUser(parseInt(req.params.userID))
     .then(reviews => {
       res.send(reviews);
@@ -117,8 +112,7 @@ app.get('/reviews/user/:userID', (req, res) => {
 });
 
 app.get('/reviews/story/:storyID', (req, res) => {
-  // mariaDB
-  mongoDB
+  database
     .getReviewsByStory(parseInt(req.params.storyID))
     .then(reviews => {
       res.send(reviews);
@@ -130,8 +124,7 @@ app.get('/reviews/story/:storyID', (req, res) => {
 });
 
 app.post('/reviews', (req, res) => {
-  // mariaDB
-  mongoDB
+  database
     .addReview(req.body.review as Review, parseInt(req.body.creditEarned))
     .then(res.status(200).send())
     .catch(error => {
@@ -147,8 +140,7 @@ app.post('/reviews', (req, res) => {
 });
 
 app.post('/rating', (req, res) => {
-  // mariaDB
-  mongoDB
+  database
     .rateReview(parseInt(req.body.reviewID), parseInt(req.body.rating))
     .then(res.status(200).send())
     .catch(error => {
@@ -164,7 +156,7 @@ app.post('/rating', (req, res) => {
 });
 
 app.get('/reservations/:userID', (req, res) => {
-  mongoDB
+  database
     .getReservationsByUser(parseInt(req.params.userID))
     .then(reservations => {
       res.send(reservations);
@@ -176,7 +168,7 @@ app.get('/reservations/:userID', (req, res) => {
 });
 
 app.post('/reservations', (req, res) => {
-  mongoDB
+  database
     .addReservation(req.body.userID, req.body.storyID)
     .then(res.status(200).send())
     .catch(error => {
@@ -192,7 +184,7 @@ app.post('/reservations', (req, res) => {
 });
 
 app.post('/register', (req: Request, res: Response) => {
-  mongoDB
+  database
     .register(req.body.UserName, req.body.Password)
     .then(loginPackage => {
       res.send(JSON.stringify(loginPackage));
@@ -209,7 +201,7 @@ app.post('/register', (req: Request, res: Response) => {
 });
 
 app.post('/login', (req, res) => {
-  mongoDB
+  database
     .loginUser(req.body.UserName, req.body.Password)
     .then(loginPackage => {
       res.send(JSON.stringify(loginPackage));

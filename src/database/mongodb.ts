@@ -1,10 +1,11 @@
 import { MongoClient, Db } from 'mongodb';
-import { Reservation } from './types/reservation';
-import { Review } from './types/review';
+import { Reservation } from '../types/reservation';
+import { Review } from '../types/review';
 
 import uuidv4 = require('uuid/v4');
+import { Database } from './database';
 
-export class MongoDB {
+export class MongoDB implements Database {
   private client: MongoClient;
   private dbName: string;
   constructor({
@@ -25,6 +26,41 @@ export class MongoDB {
     this.dbName = dbName;
   }
 
+  // STORIES
+  public async getStories(): Promise<any> {
+
+  }
+
+  public async addStory(
+    userID: number,
+    url: string,
+    title: string,
+    genre: string,
+    blurb: string,
+    wordCount: number,
+    desiredReviews: number,
+    postingCost: number
+  ): Promise<any> {
+    
+  }
+
+  public async getStoriesByUser(userID: number): Promise<any> {
+
+  }
+
+  // SEARCH
+  public async getBlankSearch(userID?: number): Promise<any> {
+
+  }
+  public async searchStories(
+    searchTerm: string,
+    userToExclude?: string,
+    includeReviewsFinished?: boolean
+  ): Promise<any> {
+
+  }
+
+  // REVIEWS
   async getReviewsByUser(userID: number) {
     const db: Db = this.client.db(this.dbName);
     return db
@@ -98,6 +134,7 @@ export class MongoDB {
     return;
   }
 
+  // RESERVATIONS
   async addReservation(userID: number, storyID: number): Promise<boolean> {
     const db: Db = this.client.db(this.dbName);
     const reservation = { UserID: userID, StoryID: storyID };
@@ -111,6 +148,7 @@ export class MongoDB {
     return res;
   }
 
+  // USERS
   removeUserByName(userName: string): Promise<null> {
     const db: Db = this.client.db(this.dbName);
     return db.collection('users').deleteOne({ username: userName });

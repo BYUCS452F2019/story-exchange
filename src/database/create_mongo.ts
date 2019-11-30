@@ -1,10 +1,10 @@
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017';
-const dbName = 'story_exchange';
+const databaseName = 'story_exchange';
 
 MongoClient.connect(url, function(err, db) {
   if (err) throw err;
-  const dbo = db.db(dbName);
+  const dbo = db.db(databaseName);
   console.log('Database created!');
   db.createUser({ user: 'admin', pwd: 'secret-password' });
   dbo.createCollection('reservations', function(err, res) {
