@@ -18,7 +18,7 @@ export interface Database {
   getBlankSearch(userID?: number): Promise<any>;
   searchStories(
     searchTerm: string,
-    userToExclude?: string,
+    userToExclude?: number,
     includeReviewsFinished?: boolean
   ): Promise<any>;
 

@@ -86,6 +86,7 @@ export class MariaDB implements Database {
     return stories;
   }
 
+  // TODO: this doesn't filter out ones with enough reviews and reservations
   public async getBlankSearch(userID?: number) {
     const userClause = userID
       ? `WHERE WriterID <> ${userID}
@@ -115,7 +116,7 @@ export class MariaDB implements Database {
 
   public async searchStories(
     searchTerm: string,
-    userToExclude?: string,
+    userToExclude?: number,
     includeReviewsFinished?: boolean
   ) {
     const excludeUser = userToExclude
