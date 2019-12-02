@@ -150,10 +150,10 @@ export class MongoDB implements Database {
 
     return stories.filter(
       story =>
-        reviewsByUser.find(review => review.StoryID === story._id) ===
+        reviewsByUser.find(review => review.StoryID == story._id) ===
           undefined &&
         reservationsByUser.find(
-          reservation => reservation.StoryID === story._id
+          reservation => reservation.StoryID == story._id
         ) === undefined
     );
   }
