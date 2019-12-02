@@ -147,27 +147,14 @@ export class MongoDB implements Database {
         UserID: userID
       })
       .toArray();
-    console.log('reviews');
-    reviewsByUser.forEach(rev => {
-      console.log(rev);
-      console.log(typeof rev);
-    });
-    console.log('reservations');
-    reservationsByUser.forEach(res => {
-      console.log(res);
-      console.log(typeof res);
-    });
-    console.log('stories');
-    stories.forEach(story => {
-      console.log(story);
-    });
     return stories.filter(
       story =>
-        reviewsByUser.find(review => review.StoryID == story._id) ===
-          undefined &&
-        reservationsByUser.find(
-          reservation => reservation.StoryID == story._id
-        ) === undefined
+        reviewsByUser.find(review => {
+          return review.StoryID.equals(story._id);
+        }) === undefined &&
+        reservationsByUser.find(reservation => {
+          return reservation.StoryID.equals(story._id);
+        }) === undefined
     );
   }
 
@@ -186,10 +173,10 @@ export class MongoDB implements Database {
 
     return stories.filter(story => {
       const numReviewsOnStory = reviews.filter(
-        review => review.StoryID === story._id
+        review => review.StoryID == story._id
       ).length;
       const numReservationsOnStory = reservations.filter(
-        reservations => reservations.StoryID === story._id
+        reservations => reservations.StoryID == story._id
       ).length;
 
       return numReviewsOnStory + numReservationsOnStory < story.DesiredReviews;
