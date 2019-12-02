@@ -65,7 +65,7 @@ MongoClient.connect(url, function(err, db) {
   stories.insertMany([
     {
       _id: new ObjectId('100000000000000000000000'),
-      WriterID: 1007,
+      WriterID: new ObjectId('100700000000000000000000'),
       Writer: 'demo_user',
       StoryURL: 'inkitt.com/fake-link',
       Title: 'Those Ills We Bear',
@@ -76,7 +76,7 @@ MongoClient.connect(url, function(err, db) {
     },
     {
       _id: new ObjectId('100100000000000000000000'),
-      WriterID: 1005,
+      WriterID: new ObjectId('100500000000000000000000'),
       Writer: 'falcon',
       StoryURL: 'inkitt.com/fake-link',
       Title: 'What We Really Are',
@@ -87,7 +87,7 @@ MongoClient.connect(url, function(err, db) {
     },
     {
       _id: new ObjectId('100200000000000000000000'),
-      WriterID: 1004,
+      WriterID: new ObjectId('100400000000000000000000'),
       Writer: 'mistborn',
       StoryURL: 'inkitt.com/fake-link',
       Title: "Birds Aren't Real",
@@ -98,7 +98,7 @@ MongoClient.connect(url, function(err, db) {
     },
     {
       _id: new ObjectId('100300000000000000000000'),
-      WriterID: 1007,
+      WriterID: new ObjectId('100700000000000000000000'),
       Writer: 'demo_user',
       StoryURL: 'inkitt.com/fake-link',
       Title: 'Going in Circles',
@@ -109,7 +109,7 @@ MongoClient.connect(url, function(err, db) {
     },
     {
       _id: new ObjectId('100400000000000000000000'),
-      WriterID: 1003,
+      WriterID: new ObjectId('100300000000000000000000'),
       Writer: 'sparrow',
       StoryURL: 'inkitt.com/fake-link',
       Title: 'Uncovered',
@@ -120,7 +120,7 @@ MongoClient.connect(url, function(err, db) {
     },
     {
       _id: new ObjectId('100500000000000000000000'),
-      WriterID: 1003,
+      WriterID: new ObjectId('100300000000000000000000'),
       Writer: 'sparrow',
       StoryURL: 'inkitt.com/fake-link',
       Title: 'No Bodies',
@@ -131,7 +131,7 @@ MongoClient.connect(url, function(err, db) {
     },
     {
       _id: new ObjectId('100600000000000000000000'),
-      WriterID: 1002,
+      WriterID: new ObjectId('100200000000000000000000'),
       Writer: 'bettyTheBot',
       StoryURL: 'inkitt.com/fake-link',
       Title: 'Modestly Mean',
@@ -146,43 +146,46 @@ MongoClient.connect(url, function(err, db) {
     {
       ReviewText:
         "This was not the best book I've ever read, but it also wasn't the worst.",
-      ReviewerID: 1005,
-      StoryID: 1000
+      ReviewerID: new ObjectId('100500000000000000000000'),
+      StoryID: new ObjectId('100000000000000000000000')
     },
     {
       ReviewText:
         'I actually really enjoyed reading this! It made me think about my mom.',
-      ReviewerID: 1002,
-      StoryID: 1000
+      ReviewerID: new ObjectId('100200000000000000000000'),
+      StoryID: new ObjectId('100000000000000000000000')
     },
 
     {
       ReviewText: 'Absolute garbage. Start over.',
-      ReviewerID: 1003,
-      StoryID: 1003
+      ReviewerID: new ObjectId('100300000000000000000000'),
+      StoryID: new ObjectId('100300000000000000000000')
     },
 
     {
       ReviewText:
         'I have mixed feelings about this. On the one hand.... but then again, on the other...',
-      ReviewerID: 1001,
-      StoryID: 1003
+      ReviewerID: new ObjectId('100100000000000000000000'),
+      StoryID: new ObjectId('100300000000000000000000')
     },
 
     {
       ReviewText:
         "This was a great story! I really liked your characters. I felt like I could never predict what Jessica would do, but I actually kind of loved that about her character. I thought the plot was pretty good, but the first quarter was a little slow for me. Chapters 4 and 5 felt like they could be combined, for example, and I don't see why chapter 7 is there at all. The biggest weakness though was with setting - I never felt like I had a good idea of where the characters were. Take some time to describe the buildings, the weather, the yellow wallpaper, whatever it takes to give me some hints and let my imagination do the rest.",
-      ReviewerID: 1007,
-      StoryID: 1002
+      ReviewerID: new ObjectId('100700000000000000000000'),
+      StoryID: new ObjectId('100200000000000000000000')
     },
 
     {
       ReviewText:
         "Overall this was pretty solid. I like the way the characters interacted with each other and how you had a few that were constant but most of them fell in and out of the story. It made it seem more realistic. I also liked you pacing, although at some points it felt like you were stretching to hit a specific word count. If you want to improve, I would say my biggest issue was with prose. Tighten it up a little more and try to find your own voice, then keep that voice consistent throughout the story. Also, don't try to use big words if you don't know what they mean.",
-      ReviewerID: 1007,
-      StoryID: 1005
+      ReviewerID: new ObjectId('100700000000000000000000'),
+      StoryID: new ObjectId('100500000000000000000000')
     }
   ]);
-  reservations.insertOne({ UserID: 1007, StoryID: 1006 });
+  reservations.insertOne({
+    UserID: new ObjectId('100700000000000000000000'),
+    StoryID: new ObjectId('100600000000000000000000')
+  });
   db.close();
 });

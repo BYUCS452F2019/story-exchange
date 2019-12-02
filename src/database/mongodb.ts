@@ -280,6 +280,7 @@ export class MongoDB implements Database {
       .collection('reservations')
       .find({ UserID: userID })
       .toArray();
+    console.log(res);
     return res;
   }
 
@@ -330,8 +331,6 @@ export class MongoDB implements Database {
         .slice(0, 19)
         .replace('T', ' ')
     };
-
-    console.log(new_entry);
 
     await db.collection('users').insertOne(new_entry);
 
