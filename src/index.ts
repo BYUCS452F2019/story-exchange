@@ -101,7 +101,7 @@ app.post('/stories', (req, res) => {
 
 app.get('/reviews/user/:userID', (req, res) => {
   database
-    .getReviewsByUser(parseInt(req.params.userID))
+    .getReviewsByUser(req.params.userID)
     .then(reviews => {
       res.send(reviews);
     })

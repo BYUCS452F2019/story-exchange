@@ -46,12 +46,11 @@ export class MongoDB implements Database {
     postingCost: number
   ): Promise<any> {
     const db: Db = this.client.db(this.dbName);
-    const user = await db
-      .collection('users')
-      .findOne({ _id: new ObjectId(userID) });
+    const ID = new ObjectId(userID);
+    const user = await db.collection('users').findOne({ _id: ID });
 
     await db.collection('stories').insertOne({
-      WriterID: userID,
+      WriterID: ID,
       Writer: user.UserName,
       StoryURL: url,
       PostedDate: new Date(),
@@ -63,7 +62,7 @@ export class MongoDB implements Database {
     });
 
     await db.collection('users').updateOne(
-      { _id: new ObjectId(userID) },
+      { _id: ID },
       {
         $inc: {
           Credit: -postingCost
@@ -76,20 +75,21 @@ export class MongoDB implements Database {
     const db: Db = this.client.db(this.dbName);
     return await db
       .collection('stories')
-      .find({ WriterID: userID })
+      .find({ WriterID: new ObjectId(userID) })
       .toArray();
   }
 
   // SEARCH
   public async getBlankSearch(userID?: number): Promise<any> {
-    const filter = userID ? { WriterID: { $ne: userID } } : {};
+    const ID = new ObjectId(userID);
+    const filter = userID ? { WriterID: { $ne: ID } } : {};
     const db: Db = this.client.db(this.dbName);
     const allStories = await db
       .collection('stories')
       .find(filter)
       .toArray();
     const filteredByUser = userID
-      ? await this.filterStoriesRelatedToUser(db, allStories, userID)
+      ? await this.filterStoriesRelatedToUser(db, allStories, ID)
       : allStories;
 
     // TODO: change this function's parameters in the interface to make
@@ -109,7 +109,7 @@ export class MongoDB implements Database {
   ): Promise<any> {
     const db: Db = this.client.db(this.dbName);
     const userFilter = userToExclude
-      ? { WriterID: { $ne: userToExclude } }
+      ? { WriterID: { $ne: new ObjectId(userToExclude) } }
       : {};
     const regex = new RegExp(searchTerm, 'i');
     const allStories = await db
@@ -133,7 +133,7 @@ export class MongoDB implements Database {
   private async filterStoriesRelatedToUser(
     db: Db,
     stories: any[],
-    userID: number
+    userID: ObjectId
   ): Promise<any[]> {
     const reviewsByUser = await db
       .collection('reviews')
@@ -147,7 +147,20 @@ export class MongoDB implements Database {
         UserID: userID
       })
       .toArray();
-
+    console.log('reviews');
+    reviewsByUser.forEach(rev => {
+      console.log(rev);
+      console.log(typeof rev);
+    });
+    console.log('reservations');
+    reservationsByUser.forEach(res => {
+      console.log(res);
+      console.log(typeof res);
+    });
+    console.log('stories');
+    stories.forEach(story => {
+      console.log(story);
+    });
     return stories.filter(
       story =>
         reviewsByUser.find(review => review.StoryID === story._id) ===
@@ -186,45 +199,51 @@ export class MongoDB implements Database {
   // REVIEWS
   async getReviewsByUser(userID: number) {
     const db: Db = this.client.db(this.dbName);
-    return db
+    const rev = await db
       .collection('reviews')
-      .find({ ReviewerID: userID })
+      .find({ ReviewerID: new ObjectId(userID) })
       .toArray();
+    return rev;
   }
 
   async getReviewsByStory(storyID: number) {
     const db: Db = this.client.db(this.dbName);
     return db
       .collection('reviews')
-      .find({ StoryID: storyID })
+      .find({ StoryID: new ObjectId(storyID) })
       .toArray();
   }
 
   async addReview(review: Review, creditEarned: number) {
     const db: Db = this.client.db(this.dbName);
     const reviews = db.collection('reviews');
+    const reviewerID = new ObjectId(review.ReviewerID);
+    const storyID = new ObjectId(review.StoryID);
     const otherReviews = await reviews
-      .find({ ReviewerID: review.ReviewerID, StoryID: review.StoryID })
+      .find({
+        ReviewerID: reviewerID,
+        StoryID: storyID
+      })
       .toArray();
     if (otherReviews.length > 0) {
       throw new Error('Review from this user already exists for this story');
     }
     reviews.insertOne({
       ReviewText: review.ReviewText,
-      ReviewerID: review.ReviewerID,
-      StoryID: review.StoryID
+      ReviewerID: reviewerID,
+      StoryID: storyID
     });
     db.collection('reservations').deleteOne({
-      UserID: review.ReviewerID,
-      StoryID: review.StoryID
+      UserID: reviewerID,
+      StoryID: storyID
     });
     const stories = db.collection('stories');
     const savedStory = await stories.findOne({
-      _id: new ObjectId(review.StoryID)
+      _id: storyID
     });
     const desiredReviews = savedStory.DesiredReviews;
     if (desiredReviews - 1 >= 0) {
-      const storyQuery = { _id: new ObjectId(review.StoryID) };
+      const storyQuery = { _id: storyID };
       const newDesiredReviews = {
         $set: { DesiredReviews: desiredReviews - 1 }
       };
@@ -233,10 +252,8 @@ export class MongoDB implements Database {
       });
     }
     const users = db.collection('users');
-    const savedUser = await db
-      .collection('users')
-      .findOne({ _id: new ObjectId(review.ReviewerID) });
-    const userQuery = { _id: new ObjectId(review.ReviewerID) };
+    const savedUser = await db.collection('users').findOne({ _id: reviewerID });
+    const userQuery = { _id: reviewerID };
     const newCredit = { $set: { Credit: savedUser.Credit + creditEarned } };
     users.updateOne(userQuery, newCredit, function(err, res) {
       {
@@ -262,11 +279,12 @@ export class MongoDB implements Database {
   // RESERVATIONS
   async addReservation(userID: number, storyID: number): Promise<boolean> {
     const db: Db = this.client.db(this.dbName);
-    const reservation = { UserID: userID, StoryID: storyID };
+    const reservation = {
+      UserID: new ObjectId(userID),
+      StoryID: new ObjectId(storyID)
+    };
     const allReservations = db.collection('reservations');
-    const otherReservations = await allReservations
-      .find({ UserID: userID, StoryID: storyID })
-      .toArray();
+    const otherReservations = await allReservations.find(reservation).toArray();
     if (otherReservations.length > 0) {
       throw new Error('User has already reserved this story for review');
     }
@@ -278,9 +296,8 @@ export class MongoDB implements Database {
     const db: Db = this.client.db(this.dbName);
     const res = await db
       .collection('reservations')
-      .find({ UserID: userID })
+      .find({ UserID: new ObjectId(userID) })
       .toArray();
-    console.log(res);
     return res;
   }
 
