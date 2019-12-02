@@ -263,6 +263,13 @@ export class MongoDB implements Database {
   async addReservation(userID: number, storyID: number): Promise<boolean> {
     const db: Db = this.client.db(this.dbName);
     const reservation = { UserID: userID, StoryID: storyID };
+    const allReservations = db.collection('reservations');
+    const otherReservations = await allReservations
+      .find({ UserID: userID, StoryID: storyID })
+      .toArray();
+    if (otherReservations.length > 0) {
+      throw new Error('User has already reserved this story for review');
+    }
     db.collection('reservations').insertOne(reservation);
     return true;
   }
@@ -317,12 +324,14 @@ export class MongoDB implements Database {
 
     const new_entry = {
       SessionToken: sessionToken,
-      UserID: maybeUser[0].UserID,
+      UserID: maybeUser[0]._id,
       Expires: expirationDate
         .toISOString()
         .slice(0, 19)
         .replace('T', ' ')
     };
+
+    console.log(new_entry);
 
     await db.collection('users').insertOne(new_entry);
 
