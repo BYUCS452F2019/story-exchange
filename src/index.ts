@@ -113,7 +113,7 @@ app.get('/reviews/user/:userID', (req, res) => {
 
 app.get('/reviews/story/:storyID', (req, res) => {
   database
-    .getReviewsByStory(parseInt(req.params.storyID))
+    .getReviewsByStory(req.params.storyID)
     .then(reviews => {
       res.send(reviews);
     })
@@ -141,7 +141,7 @@ app.post('/reviews', (req, res) => {
 
 app.post('/rating', (req, res) => {
   database
-    .rateReview(parseInt(req.body.reviewID), parseInt(req.body.rating))
+    .rateReview(req.body.reviewID, parseInt(req.body.rating))
     .then(res.status(200).send())
     .catch(error => {
       console.log(error.message);

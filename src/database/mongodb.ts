@@ -149,12 +149,11 @@ export class MongoDB implements Database {
       .toArray();
     return stories.filter(
       story =>
-        reviewsByUser.find(review => {
-          return review.StoryID.equals(story._id);
-        }) === undefined &&
-        reservationsByUser.find(reservation => {
-          return reservation.StoryID.equals(story._id);
-        }) === undefined
+        reviewsByUser.find(review => review.StoryID.equals(story._id)) ===
+          undefined &&
+        reservationsByUser.find(reservation =>
+          reservation.StoryID.equals(story._id)
+        ) === undefined
     );
   }
 
@@ -172,11 +171,11 @@ export class MongoDB implements Database {
       .toArray();
 
     return stories.filter(story => {
-      const numReviewsOnStory = reviews.filter(
-        review => review.StoryID == story._id
+      const numReviewsOnStory = reviews.filter(review =>
+        review.StoryID.equals(story._id)
       ).length;
-      const numReservationsOnStory = reservations.filter(
-        reservations => reservations.StoryID == story._id
+      const numReservationsOnStory = reservations.filter(reservation =>
+        reservation.StoryID.equals(story._id)
       ).length;
 
       return numReviewsOnStory + numReservationsOnStory < story.DesiredReviews;
@@ -186,11 +185,10 @@ export class MongoDB implements Database {
   // REVIEWS
   async getReviewsByUser(userID: number) {
     const db: Db = this.client.db(this.dbName);
-    const rev = await db
+    return db
       .collection('reviews')
       .find({ ReviewerID: new ObjectId(userID) })
       .toArray();
-    return rev;
   }
 
   async getReviewsByStory(storyID: number) {
@@ -281,11 +279,10 @@ export class MongoDB implements Database {
 
   async getReservationsByUser(userID: string): Promise<Reservation[]> {
     const db: Db = this.client.db(this.dbName);
-    const res = await db
+    return db
       .collection('reservations')
       .find({ UserID: new ObjectId(userID) })
       .toArray();
-    return res;
   }
 
   // USERS
