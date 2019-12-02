@@ -204,7 +204,7 @@ export class MongoDB implements Database {
     const db: Db = this.client.db(this.dbName);
     const reviews = db.collection('reviews');
     const otherReviews = await reviews
-      .find({ ReviewerID: review.ReviewerID })
+      .find({ ReviewerID: review.ReviewerID, StoryID: review.StoryID })
       .toArray();
     if (otherReviews.length > 0) {
       throw new Error('Review from this user already exists for this story');
@@ -261,6 +261,13 @@ export class MongoDB implements Database {
   async addReservation(userID: number, storyID: number): Promise<boolean> {
     const db: Db = this.client.db(this.dbName);
     const reservation = { UserID: userID, StoryID: storyID };
+    const allReservations = db.collection('reservations');
+    const otherReservations = await allReservations
+      .find({ UserID: userID, StoryID: storyID })
+      .toArray();
+    if (otherReservations.length > 0) {
+      throw new Error('User has already reserved this story for review');
+    }
     db.collection('reservations').insertOne(reservation);
     return true;
   }
