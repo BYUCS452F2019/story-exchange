@@ -1,5 +1,5 @@
-import { Review } from "../types/review";
-import { Reservation } from "../types/reservation";
+import { Review } from '../types/review';
+import { Reservation } from '../types/reservation';
 
 export interface Database {
   getStories(): Promise<any>;
@@ -27,7 +27,7 @@ export interface Database {
   addReview(review: Review, creditEarned: number): Promise<any>;
   rateReview(reviewID: number, rating: number): Promise<any>;
 
-  getReservationsByUser(userID: number): Promise<Reservation[]>;
+  getReservationsByUser(userID: number | string): Promise<Reservation[]>;
   addReservation(userID: number, storyID: number): Promise<any>;
 
   register(username: string, password: string): Promise<any>;

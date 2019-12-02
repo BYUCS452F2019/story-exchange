@@ -157,7 +157,7 @@ app.post('/rating', (req, res) => {
 
 app.get('/reservations/:userID', (req, res) => {
   database
-    .getReservationsByUser(parseInt(req.params.userID))
+    .getReservationsByUser(req.params.userID)
     .then(reservations => {
       res.send(reservations);
     })
