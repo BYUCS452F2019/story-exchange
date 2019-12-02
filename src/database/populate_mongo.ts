@@ -1,4 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectId;
 var url = 'mongodb://localhost:27017';
 const dbName = 'story_exchange';
 
@@ -11,24 +12,59 @@ MongoClient.connect(url, function(err, db) {
   const reservations = dbo.collection('reservations');
 
   users.insertMany([
-    { _id: 1000, UserName: 'notch', Password: 'password', Credit: 526 },
-    { _id: 1001, UserName: 'dipper', Password: 'password', Credit: 26 },
-    { _id: 1002, UserName: 'bettyTheBot', Password: 'password', Credit: 99 },
-    { _id: 1003, UserName: 'sparrow', Password: 'password', Credit: 350 },
-    { _id: 1004, UserName: 'mistborn', Password: 'password', Credit: 0 },
-    { _id: 1005, UserName: 'falcon', Password: 'password', Credit: 19 },
     {
-      _id: 1006,
+      _id: new ObjectId('100000000000000000000000'),
+      UserName: 'notch',
+      Password: 'password',
+      Credit: 526
+    },
+    {
+      _id: new ObjectId('100100000000000000000000'),
+      UserName: 'dipper',
+      Password: 'password',
+      Credit: 26
+    },
+    {
+      _id: new ObjectId('100200000000000000000000'),
+      UserName: 'bettyTheBot',
+      Password: 'password',
+      Credit: 99
+    },
+    {
+      _id: new ObjectId('100300000000000000000000'),
+      UserName: 'sparrow',
+      Password: 'password',
+      Credit: 350
+    },
+    {
+      _id: new ObjectId('100400000000000000000000'),
+      UserName: 'mistborn',
+      Password: 'password',
+      Credit: 0
+    },
+    {
+      _id: new ObjectId('100500000000000000000000'),
+      UserName: 'falcon',
+      Password: 'password',
+      Credit: 19
+    },
+    {
+      _id: new ObjectId('100600000000000000000000'),
       UserName: 'basic provo bro',
       Password: 'password',
       Credit: 36
     },
-    { _id: 1007, UserName: 'demo_user', Password: 'password', Credit: 106 }
+    {
+      _id: new ObjectId('100700000000000000000000'),
+      UserName: 'demo_user',
+      Password: 'password',
+      Credit: 106
+    }
   ]);
 
   stories.insertMany([
     {
-      _id: 1000,
+      _id: new ObjectId('100000000000000000000000'),
       WriterID: 1007,
       Writer: 'demo_user',
       StoryURL: 'inkitt.com/fake-link',
@@ -39,7 +75,7 @@ MongoClient.connect(url, function(err, db) {
       DesiredReviews: 10
     },
     {
-      _id: 1001,
+      _id: new ObjectId('100100000000000000000000'),
       WriterID: 1005,
       Writer: 'falcon',
       StoryURL: 'inkitt.com/fake-link',
@@ -50,7 +86,7 @@ MongoClient.connect(url, function(err, db) {
       DesiredReviews: 10
     },
     {
-      _id: 1002,
+      _id: new ObjectId('100200000000000000000000'),
       WriterID: 1004,
       Writer: 'mistborn',
       StoryURL: 'inkitt.com/fake-link',
@@ -61,7 +97,7 @@ MongoClient.connect(url, function(err, db) {
       DesiredReviews: 10
     },
     {
-      _id: 1003,
+      _id: new ObjectId('100300000000000000000000'),
       WriterID: 1007,
       Writer: 'demo_user',
       StoryURL: 'inkitt.com/fake-link',
@@ -72,7 +108,7 @@ MongoClient.connect(url, function(err, db) {
       DesiredReviews: 5
     },
     {
-      _id: 1004,
+      _id: new ObjectId('100400000000000000000000'),
       WriterID: 1003,
       Writer: 'sparrow',
       StoryURL: 'inkitt.com/fake-link',
@@ -83,7 +119,7 @@ MongoClient.connect(url, function(err, db) {
       DesiredReviews: 7
     },
     {
-      _id: 1005,
+      _id: new ObjectId('100500000000000000000000'),
       WriterID: 1003,
       Writer: 'sparrow',
       StoryURL: 'inkitt.com/fake-link',
@@ -94,7 +130,7 @@ MongoClient.connect(url, function(err, db) {
       DesiredReviews: 6
     },
     {
-      _id: 1006,
+      _id: new ObjectId('100600000000000000000000'),
       WriterID: 1002,
       Writer: 'bettyTheBot',
       StoryURL: 'inkitt.com/fake-link',

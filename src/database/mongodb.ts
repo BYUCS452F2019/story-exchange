@@ -63,7 +63,7 @@ export class MongoDB implements Database {
     });
 
     await db.collection('users').updateOne(
-      { _id: userID },
+      { _id: new ObjectId(userID) },
       {
         $inc: {
           Credit: -postingCost
@@ -204,7 +204,7 @@ export class MongoDB implements Database {
     const db: Db = this.client.db(this.dbName);
     const reviews = db.collection('reviews');
     const otherReviews = await reviews
-      .find({ ReviewerID: review.ReviewerID })
+      .find({ ReviewerID: review.ReviewerID, StoryID: review.StoryID })
       .toArray();
     if (otherReviews.length > 0) {
       throw new Error('Review from this user already exists for this story');
@@ -219,10 +219,12 @@ export class MongoDB implements Database {
       StoryID: review.StoryID
     });
     const stories = db.collection('stories');
-    const savedReview = await stories.findOne({ _id: review.StoryID });
-    const desiredReviews = savedReview.DesiredReviews;
+    const savedStory = await stories.findOne({
+      _id: new ObjectId(review.StoryID)
+    });
+    const desiredReviews = savedStory.DesiredReviews;
     if (desiredReviews - 1 >= 0) {
-      const storyQuery = { _id: review.StoryID };
+      const storyQuery = { _id: new ObjectId(review.StoryID) };
       const newDesiredReviews = {
         $set: { DesiredReviews: desiredReviews - 1 }
       };
@@ -233,8 +235,8 @@ export class MongoDB implements Database {
     const users = db.collection('users');
     const savedUser = await db
       .collection('users')
-      .findOne({ _id: review.ReviewerID });
-    const userQuery = { _id: review.ReviewerID };
+      .findOne({ _id: new ObjectId(review.ReviewerID) });
+    const userQuery = { _id: new ObjectId(review.ReviewerID) };
     const newCredit = { $set: { Credit: savedUser.Credit + creditEarned } };
     users.updateOne(userQuery, newCredit, function(err, res) {
       {
@@ -246,7 +248,7 @@ export class MongoDB implements Database {
 
   async rateReview(reviewID: number, rating: number) {
     const db: Db = this.client.db(this.dbName);
-    const reviewQuery = { _id: reviewID };
+    const reviewQuery = { _id: new ObjectId(reviewID) };
     const newRating = { $set: { Rating: rating } };
     db.collection('reviews').updateOne(reviewQuery, newRating, function(
       err,
