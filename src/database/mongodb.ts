@@ -322,12 +322,14 @@ export class MongoDB implements Database {
 
     const new_entry = {
       SessionToken: sessionToken,
-      UserID: maybeUser[0].UserID,
+      UserID: maybeUser[0]._id,
       Expires: expirationDate
         .toISOString()
         .slice(0, 19)
         .replace('T', ' ')
     };
+
+    console.log(new_entry);
 
     await db.collection('users').insertOne(new_entry);
 
