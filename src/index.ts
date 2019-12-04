@@ -101,7 +101,7 @@ app.post('/stories', (req, res) => {
 
 app.get('/reviews/user/:userID', (req, res) => {
   database
-    .getReviewsByUser(parseInt(req.params.userID))
+    .getReviewsByUser(req.params.userID)
     .then(reviews => {
       res.send(reviews);
     })
@@ -113,7 +113,7 @@ app.get('/reviews/user/:userID', (req, res) => {
 
 app.get('/reviews/story/:storyID', (req, res) => {
   database
-    .getReviewsByStory(parseInt(req.params.storyID))
+    .getReviewsByStory(req.params.storyID)
     .then(reviews => {
       res.send(reviews);
     })
@@ -141,7 +141,7 @@ app.post('/reviews', (req, res) => {
 
 app.post('/rating', (req, res) => {
   database
-    .rateReview(parseInt(req.body.reviewID), parseInt(req.body.rating))
+    .rateReview(req.body.reviewID, parseInt(req.body.rating))
     .then(res.status(200).send())
     .catch(error => {
       console.log(error.message);
@@ -157,7 +157,7 @@ app.post('/rating', (req, res) => {
 
 app.get('/reservations/:userID', (req, res) => {
   database
-    .getReservationsByUser(parseInt(req.params.userID))
+    .getReservationsByUser(req.params.userID)
     .then(reservations => {
       res.send(reservations);
     })
